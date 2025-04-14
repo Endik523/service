@@ -23,46 +23,50 @@ class IsiController extends Controller
     // Simpan data dari form
     public function store(Request $request)
     {
-        // dd("uhjds");
         // Cek apakah pengguna sudah login
         if (!Auth::check()) {
-            // Jika belum login, arahkan ke halaman login
-            return redirect()->route('login');
-
-            // Jika belum login, kembalikan respons JSON, bukan redirect
-            // return response()->json([
-            //     'success' => false,
-            //     'message' => 'User tidak login'
-            // ], 401);
+            // Jika belum login, kembalikan respons JSON dengan status 401
+            return response()->json([
+                'success' => false,
+                'message' => 'User tidak login'
+            ], 401);
         }
 
-        $validated = $request->validate([
-            'username' => 'required|string|max:100',
-            'barang' => 'required|string|max:50',
-            'alamat' => 'required|string',
-            'tgl_pesan' => 'required|date',
-            'pesan' => 'nullable|string',
-        ]);
+        try {
+            $validated = $request->validate([
+                'username' => 'required|string|max:100',
+                'barang' => 'required|string|max:50',
+                'alamat' => 'required|string',
+                'tgl_pesan' => 'required|date',
+                'pesan' => 'nullable|string',
+            ]);
 
-        // Fungsi untuk menghasilkan random_id unik
-        $randomId = $this->generateUniqueRandomId();
+            // Fungsi untuk menghasilkan random_id unik
+            $randomId = $this->generateUniqueRandomId();
 
-        // Ambil user_id dari pengguna yang sedang login
-        $userId = Auth::id();
+            // Ambil user_id dari pengguna yang sedang login
+            $userId = Auth::id();
 
-        // Simpan data pesanan dengan random_id yang unik dan user_id yang terkait
-        $validated['random_id'] = $randomId;
-        $validated['user_id'] = $userId; // Menambahkan user_id yang diambil dari Auth
+            // Simpan data pesanan dengan random_id yang unik dan user_id yang terkait
+            $validated['random_id'] = $randomId;
+            $validated['user_id'] = $userId; // Menambahkan user_id yang diambil dari Auth
 
-        // Simpan order
-        $order = Order::create($validated);
+            // Simpan order
+            $order = Order::create($validated);
 
-        // Mengembalikan respons JSON
-        // if ($order) {
-        //     return response()->json(['success' => true]);
-        // } else {
-        //     return response()->json(['success' => false]);
-        // }
+            // Mengembalikan respons JSON yang valid
+            return response()->json([
+                'success' => true,
+                'message' => 'Pesanan berhasil dibuat',
+                'data' => $order
+            ]);
+        } catch (\Exception $e) {
+            // Tangkap error dan kembalikan JSON error
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
 
