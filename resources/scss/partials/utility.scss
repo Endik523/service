@@ -1,0 +1,114 @@
+.image {
+    width: 200px;
+    height: auto; // Proporsi tetap
+}
+
+//STATUS PAGE
+
+//STATUS TABLE
+.table {
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.table thead th {
+    background-color: #768fa7;
+    color: white;
+}
+
+.table tbody tr:nth-child(odd) {
+    background-color: #f8f9fa;
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: white;
+}
+
+.card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Light shadow */
+    border-radius: 0.75rem; /* Rounded corners */
+    padding: 1rem; /* Padding inside the card */
+    display: flex;
+    justify-content: space-between; /* Space out the child elements */
+    // width: 24rem; /* Fixed width */
+    margin: 1rem auto; /* Center the card horizontally */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-5px); /* Hover effect for slight lift */
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+    }
+
+    .section {
+        display: flex;
+        flex-direction: column; /* Stack the elements vertically */
+        margin-bottom: 1rem; /* Space between the two sections */
+
+        &-title {
+            font-size: 0.875rem; /* Small text */
+            color: #6b7280; /* Gray color for the title */
+            margin-bottom: 0.25rem; /* Space between title and content */
+        }
+
+        &-content {
+            font-size: 1rem; /* Larger text for content */
+            color: #1e40af; /* Blue for 'Nomor' */
+            font-weight: 500; /* Slightly bold */
+        }
+    }
+
+    .status-section {
+        .status-title {
+            font-size: 0.875rem; /* Same as section title */
+            color: #6b7280; /* Gray for the title */
+        }
+
+        .status-content {
+            font-size: 1rem;
+            color: #4b5563; /* Dark gray for status content */
+            font-weight: 500;
+        }
+    }
+}
+
+.card-container {
+    display: flex;
+    flex-direction: column; /* Set the layout to column */
+    gap: 1rem; /* Space between each section */
+    padding: 1rem;
+    width: 24rem; /* Optional: adjust width as needed */
+    background-color: #f9fafb; /* Light background */
+    border-radius: 0.75rem; /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
+
+    .section {
+        display: flex;
+        flex-direction: column; /* Stack the elements vertically */
+        align-items: flex-start; /* Align the text to the left */
+
+        &-title {
+            font-size: 0.875rem; /* Smaller size for title */
+            color: #6b7280; /* Gray color */
+            margin-bottom: 0.25rem; /* Space between title and content */
+        }
+
+        &-content {
+            font-size: 1rem; /* Larger text for content */
+            color: #1e40af; /* Blue color for 'Nomor' */
+            font-weight: 500; /* Slightly bold */
+        }
+    }
+
+    .status-section {
+        .status-title {
+            font-size: 0.875rem; /* Same as section title */
+            color: #6b7280; /* Gray */
+        }
+
+        .status-content {
+            font-size: 1rem;
+            color: #4b5563; /* Dark gray for status */
+            font-weight: 500;
+        }
+    }
+}
