@@ -1,20 +1,21 @@
 @extends('layouts.auth')
 
 @section('body')
+
     <div class="d-flex align-items-center justify-content-center" style="min-height: 100vh; margin-top: 70px;">
         <div class="card shadow-sm rounded-4" style="width: 700px;">
             <div class="card-body">
                 <h3 class="text-center mb-4">Isi Formulir</h3>
 
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul class="mb-0">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
+                <!-- Pesan sukses - awalnya tersembunyi -->
+                <div id="successMessage" class="alert alert-success text-center" style="display: none;">
+                    Data pesanan berhasil disimpan!
+                    <div class="mt-3">
+                        <button id="whatsappButton" class="btn btn-success">
+                            <i class="fab fa-whatsapp"></i> Lanjutkan ke WhatsApp
+                        </button>
                     </div>
-                @endif
+                </div>
 
                 <form action="{{ route('isi.store') }}" method="POST" id="contactForm">
                     @csrf
@@ -58,61 +59,68 @@
     </div>
 @endsection
 
-<script>
-    document.getElementById('contactForm').addEventListener('submit', function (event) {
-        event.preventDefault();
+@section('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const contactForm = document.getElementById('contactForm');
+            const successMessage = document.getElementById('successMessage');
+            const whatsappButton = document.getElementById('whatsappButton');
 
-        // Mengambil nilai dari form
-        var username = document.getElementById('username').value;
-        var barang = document.getElementById('barang').value;
-        var alamat = document.getElementById('alamat').value;
-        var tgl_pesan = document.getElementById('tgl_pesan').value;
-        var pesan = document.getElementById('pesan').value;
+            // Menyimpan referensi data form
+            let formValues = {};
 
-        var formData = new FormData(this);
+            contactForm.addEventListener('submit', function (event) {
+                event.preventDefault();
 
-        // Simpan URL WhatsApp dalam variabel
-        var whatsapp_url = "https://web.whatsapp.com/send?phone=6285755060739&text=Hai%20Admin.%0ANama%20Saya%20%3A%20*" +
-            encodeURIComponent(username) + "*%0ABarang%20Saya%20%3A%20*" +
-            encodeURIComponent(barang) + "*%0AAlamat%20%3A%20*" +
-            encodeURIComponent(alamat) + "*%0ATanggal%20Service%20%3A%20*" +
-            encodeURIComponent(tgl_pesan) + "*%0A%0A*Keluhan*%3A%0A" +
-            encodeURIComponent(pesan);
+                // Simpan semua nilai form
+                formValues = {
+                    username: document.getElementById('username').value,
+                    barang: document.getElementById('barang').value,
+                    alamat: document.getElementById('alamat').value,
+                    tgl_pesan: document.getElementById('tgl_pesan').value,
+                    pesan: document.getElementById('pesan').value
+                };
 
+                // Kirim data ke server menggunakan fetch
+                const formData = new FormData(this);
 
-        console.log('Mengirim data ke server...');
-
-        // Kirim data ke server
-        fetch("{{ route('isi.store') }}", {
-            method: "POST",
-            body: formData,
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
-        })
-            .then(response => response.json()) // Langsung ambil response sebagai JSON
-            .then(data => {
-                console.log('Sukses:', data);
-
-                // Menambahkan delay sebelum redirect untuk menghindari pemblokiran browser
-                setTimeout(function () {
-                    // Coba buka WhatsApp di tab baru
-                    var newWindow = window.open(whatsapp_url, '_blank');
-
-                    // Jika tab baru tidak bisa dibuka (popup blocker), fallback menggunakan window.location.href
-                    if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
-                        console.log("Tab baru diblokir, mengalihkan menggunakan window.location.href");
-                        window.location.href = whatsapp_url; // Pengalihan menggunakan URL langsung
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     }
-                }, 500); // Delay 500ms untuk menghindari pemblokiran oleh browser
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Sukses:', data);
 
-                // Reset form setelah berhasil
-                document.getElementById('contactForm').reset();
-            })
+                        // Sembunyikan form
+                        contactForm.style.display = 'none';
 
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan dalam pengiriman data.');
+                        // Tampilkan pesan sukses dan tombol WhatsApp
+                        successMessage.style.display = 'block';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan: ' + error.message);
+                    });
             });
-    });
-</script>
+
+            // Event listener untuk tombol WhatsApp
+            whatsappButton.addEventListener('click', function () {
+                // Buat URL WhatsApp dengan data form yang tersimpan
+                const whatsappUrl = "https://web.whatsapp.com/send?phone=6285755060739&text=Hai%20Admin.%0ANama%20Saya%20%3A%20*" +
+                    encodeURIComponent(formValues.username) + "*%0ABarang%20Saya%20%3A%20*" +
+                    encodeURIComponent(formValues.barang) + "*%0AAlamat%20%3A%20*" +
+                    encodeURIComponent(formValues.alamat) + "*%0ATanggal%20Service%20%3A%20*" +
+                    encodeURIComponent(formValues.tgl_pesan) + "*%0A%0A*Keluhan*%3A%0A" +
+                    encodeURIComponent(formValues.pesan);
+
+                // Buka WhatsApp di tab baru - ini akan berhasil karena dipicu oleh klik pengguna
+                window.open(whatsappUrl, '_blank');
+            });
+        });
+    </script>
+
+@endsection
