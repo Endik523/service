@@ -15,8 +15,8 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center mb-2">
-                                    <p class="mb-0">Status:</p>
-                                    <div class="px-2 bg-transparent border border-warning text-center rounded text-warning py-1 ms-auto mb-0"
+                                    <p class="mb-4">Status:</p>
+                                    <div class="px-2 bg-transparent border border-warning text-center rounded text-warning py-1 ms-auto mb-4"
                                         style="width: 100px; font-size: 12px;">
                                         {{ $order->status ?? 'Pending' }}
                                     </div>
@@ -24,7 +24,9 @@
 
                                 <div class="d-flex align-items-center">
                                     <p class="mb-2">ID-Order:</p>
-                                    <p class="text-end ms-auto mb-2">{{ $order->random_id }}</p>
+                                    <p class="text-end ms-auto mb-2" style=" font-size: 16px; font-weight: bold; color: #bd8b03;">
+                                        {{ $order->random_id }}
+                                    </p>
                                 </div>
 
                                 <div class="d-flex align-items-center">
@@ -33,24 +35,24 @@
                                 </div>
 
                                 <div class="d-flex align-items-center">
-                                    <p class="mb-0">Barang:</p>
+                                    <p class="mb-2">Barang:</p>
                                     <p class="text-end ms-auto mb-0">{{ $order->barang }}</p>
                                 </div>
 
-                                <div class="d-flex align-items-center">
+                                {{-- <div class="d-flex align-items-center">
                                     <p class="mb-0">Alamat:</p>
                                     <p class="text-end ms-auto mb-0">{{ $order->alamat }}</p>
-                                </div>
+                                </div> --}}
 
                                 <div class="d-flex align-items-center">
-                                    <p class="mb-0">Tanggal Service:</p>
+                                    <p class="mb-2">Tanggal Service:</p>
                                     <p class="text-end ms-auto mb-0">{{ $order->tgl_pesan }}</p>
                                 </div>
 
-                                <div class="d-flex align-items-center">
+                                {{-- <div class="d-flex align-items-center">
                                     <p class="mb-0">Masalah Kerusakan:</p>
                                     <p class="text-end ms-auto mb-0">{{ $order->pesan ?? '-' }}</p>
-                                </div>
+                                </div> --}}
 
                             </div>
                         </div>
