@@ -38,6 +38,7 @@ class IsiController extends Controller
                 'barang' => 'required|string|max:50',
                 'alamat' => 'required|string',
                 'tgl_pesan' => 'required|date',
+                'jemput_barang' => 'required|string',
                 'pesan' => 'nullable|string',
             ]);
 

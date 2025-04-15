@@ -35,14 +35,25 @@
                         </select>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="alamat" class="form-label fw-bold">Alamat Tempat Tinggal</label>
-                        <input type="text" id="alamat" name="alamat" class="form-control w-100" required />
-                    </div>
+
 
                     <div class="mb-3">
                         <label for="tgl_pesan" class="form-label fw-bold">Tanggal Service</label>
                         <input type="date" id="tgl_pesan" name="tgl_pesan" class="form-control w-100" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="jemput_barang" class="form-label fw-bold">Jemput Barang</label>
+                        <select id="jemput_barang" name="jemput_barang" class="form-select w-100" required>
+                            <option value="" selected disabled>Jemput Barang di Rumah...</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3" id="alamatContainer" style="display: none;">
+                        <label for="alamat" class="form-label fw-bold">Alamat Tempat Tinggal</label>
+                        <input type="text" id="alamat" name="alamat" class="form-control w-100" />
                     </div>
 
                     <div class="mb-3">
@@ -59,12 +70,25 @@
     </div>
 @endsection
 
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const contactForm = document.getElementById('contactForm');
         const successMessage = document.getElementById('successMessage');
         const whatsappButton = document.getElementById('whatsappButton');
+        const jemputBarangSelect = document.getElementById('jemput_barang');
+        const alamatContainer = document.getElementById('alamatContainer');
+
+        // Menyembunyikan alamat container saat halaman pertama kali dimuat
+        alamatContainer.style.display = 'none';
+
+        // Fungsi untuk mengontrol visibilitas input alamat
+        jemputBarangSelect.addEventListener('change', function () {
+            if (this.value === 'yes') {
+                alamatContainer.style.display = 'block';  // Menampilkan alamat
+            } else {
+                alamatContainer.style.display = 'none';   // Menyembunyikan alamat
+            }
+        });
 
         // Menyimpan referensi data form
         let formValues = {};
@@ -78,6 +102,7 @@
                 barang: document.getElementById('barang').value,
                 alamat: document.getElementById('alamat').value,
                 tgl_pesan: document.getElementById('tgl_pesan').value,
+                jemput_barang: document.getElementById('jemput_barang').value,
                 pesan: document.getElementById('pesan').value
             };
 
@@ -114,7 +139,8 @@
                 encodeURIComponent(formValues.username) + "*%0ABarang%20Saya%20%3A%20*" +
                 encodeURIComponent(formValues.barang) + "*%0AAlamat%20%3A%20*" +
                 encodeURIComponent(formValues.alamat) + "*%0ATanggal%20Service%20%3A%20*" +
-                encodeURIComponent(formValues.tgl_pesan) + "*%0A%0A*Keluhan*%3A%0A" +
+                encodeURIComponent(formValues.tgl_pesan) + "*%0A%0A*Jemput%20Barang%20Di%20Rumah*%3A%0A" +
+                encodeURIComponent(formValues.jemput_barang) + "*%0A%0A*Keluhan*%3A%0A" +
                 encodeURIComponent(formValues.pesan);
 
             // Buka WhatsApp di tab baru - ini akan berhasil karena dipicu oleh klik pengguna

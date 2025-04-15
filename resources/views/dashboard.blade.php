@@ -54,6 +54,11 @@
                                     <p class="text-end ms-auto mb-0">{{ $order->pesan ?? '-' }}</p>
                                 </div> --}}
 
+                                <div class="d-flex align-items-center">
+                                    <p class="mb-2">Jemput Barang:</p>
+                                    <p class="text-end ms-auto mb-0">{{ $order->jemput_barang }}</p>
+                                </div>
+
                             </div>
                         </div>
                     </div>
