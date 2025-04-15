@@ -1,98 +1,73 @@
-{{-- resources/views/status.blade.php --}}
-
 @extends('layouts.auth')
 
 @section('body')
 
-<div class="d-flex justify-content-center fw-bold mt-3 sizefont">
-    Pesanan Anda
-</div>
-
-<div class="bg-light">
-    <div class="container py-5">
-        <div class="table-responsive">
-            <a href="{{ route('admin.form') }}" type="button" class="btn btn-outline-primary mb-3">Tambah Pesanan</a>
-
-            <table class="table table-bordered table-striped rounded">
-                <thead class="bg-dark text-white">
-                    <tr>
-                        <th>ID Order</th>
-                        <th>Nama</th>
-                        <th>Jenis Barang</th>
-                        <th>Masalah Kerusakan</th>
-                        <th>Tanggal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>{{ $order->id }}</td> <!-- Menampilkan ID order -->
-                        <td>{{ $order->username }}</td> <!-- Menampilkan nama pengguna -->
-                        <td>{{ $order->barang }}</td> <!-- Menampilkan jenis barang -->
-                        <td>{{ $order->pesan }}</td> <!-- Menampilkan masalah kerusakan -->
-                        <td>{{ $order->tgl_pesan }}</td> <!-- Menampilkan tanggal pesan -->
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-@if ($kerusakan->isNotEmpty())
-    <div class="d-flex justify-content-center fw-bold mt-5 sizefont">
-        Status Detail
+    <div style="margin-top: 120px;">
+        <h3 class="text-center mb-4" style="font-weight: bold; font-size: 25px;">Masalah Kerusakan</h3>
     </div>
 
-    <div class="container text-center col-6 mt-3">
-        <table class="table table-bordered border-primary">
-            <thead>
-                <tr>
-                    <th style="width: 50px; font-size: 16px;">Kerusakan</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($kerusakan as $item)
-                    <tr>
-                        <td class="w-100">{{ $item->kerusakan }}</td> <!-- Menampilkan kerusakan -->
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+    <table class="tablee" style="max-width: 800px; margin: 0 auto;">
+        <tbody>
+            <tr>
+
+                <td>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas harum nesciunt qui ullam nisi
+                    voluptatibus cumque dicta ea hic impedit, quibusdam minus iure optio, sint officiis voluptatum eligendi
+                    pariatur. Consectetur.
+                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nam, dicta aut ut modi est et, minima
+                    dignissimos provident accusamus commodi, facilis dolorem similique ex nesciunt iste? Illum, similique
+                    ab! Ipsam.
+                </td>
+
+            </tr>
+        </tbody>
+    </table>
+
+
+    <div style="margin-top: 80px;">
+        <h3 class="text-center mb-4" style="font-weight: bold; font-size: 25px;">Total Biaya</h3>
     </div>
 
-    <div class="d-flex justify-content-center fw-bold mt-5 sizefont">
-        Total Biaya
+    <table class="tablee" style="width: 100%; max-width: 500px; margin: 0 auto;">
+        <thead>
+            <tr>
+                <th scope="col">No</th>
+                <th scope="col">ID Order</th>
+                <th scope="col">Nama Barang</th>
+                <th scope="col">Harga</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="font-weight: bold;">1</td>
+                <td>1133</td>
+                <td>Cassing</td>
+                <td>Rp 60.000</td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold;">2</td>
+                <td>1213</td>
+                <td>battery</td>
+                <td>Rp 200.000</td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold;">2</td>
+                <td>1213</td>
+                <td>Lorem ipsum dolor sit amet consectetur adipisicin</td>
+                <td>Rp 400.000</td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold;">Total</td>
+                <td colspan="3" style="text-align:right;">Rp 660.000</td>
+            </tr>
+        </tbody>
+
+
+    </table>
+
+    <div class="mb-4" style="text-align: center; margin-top: 20px;">
+        <button type="button" class="btn btn-outline-primary" style="width: 250px;">Batalkan Pesanan</button>
+        <button type="button" class="btn btn-outline-primary " style="width: 250px;">Lanjutkan Pembayaran</button>
     </div>
 
-    <div class="container text-center col-6 mt-3">
-        <table class="table table-bordered border-primary fontsize">
-            <thead>
-                <tr style="width: 50px; font-size: 16px;">
-                    <th>Jumlah Barang</th>
-                    <th>Jenis Barang</th>
-                    <th>Harga</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($kerusakan as $item)
-                    @if ($item->items->isNotEmpty())
-                        @foreach ($item->items as $barang)
-                            <tr>
-                                <td>{{ $barang->jumlah_item }}</td>
-                                <td>{{ $barang->jenis_barang }}</td>
-                                <td>{{ number_format($barang->harga, 2, ',', '.') }}</td>
-                            </tr>
-                        @endforeach
-                    @else
-                        <tr>
-                            <td colspan="3" class="text-center text-danger">Tidak ada barang yang terdaftar.</td>
-                        </tr>
-                    @endif
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-@else
-    <div class="alert alert-warning text-center">Status Belum Tersedia</div>
-@endif
 
 @endsection

@@ -23,10 +23,10 @@ class OrderResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\TextInput::make('username')
+            Forms\Components\TextInput::make('random_id')
                 ->required()
                 ->maxLength(255),
-            Forms\Components\TextInput::make('email')
+            Forms\Components\TextInput::make('username')
                 ->required()
                 ->maxLength(255),
             Forms\Components\TextInput::make('barang')
@@ -45,8 +45,8 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('random_id')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('username')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('email')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('barang')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('alamat')->sortable(),
                 Tables\Columns\TextColumn::make('tgl_pesan')->sortable(),

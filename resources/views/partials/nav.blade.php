@@ -13,6 +13,9 @@
                     <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
                 </li>
                 <li class="fw-bold mx-5">
+                    <a class="nav-link" href="{{ route('status') }}">Status</a>
+                </li>
+                <li class="fw-bold mx-5">
                     <a class="nav-link" href="{{ route('isi') }}">Pesan</a>
                 </li>
             </ul>

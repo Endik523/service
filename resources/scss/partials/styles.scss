@@ -225,3 +225,72 @@ p {
 .custom-icon {
     font-size: 50px;
 }
+
+.tablee {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+    // Styling untuk baris pertama (judul tabel)
+    th,
+    td {
+        padding: 12px 20px;
+        text-align: left;
+        font-size: 16px;
+        color: #333;
+        border: 1px solid #ddd;
+    }
+
+    // Styling untuk header tabel
+    th {
+        background-color: #007bff; // Warna header biru
+        color: white;
+        font-weight: bold;
+        border-radius: 8px 8px 0 0;
+        text-transform: uppercase;
+    }
+
+    // Styling untuk baris-baris tabel
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    tr:nth-child(odd) {
+        background-color: #ffffff;
+    }
+
+    // Hover effect untuk baris tabel
+    tr:hover {
+        background-color: #e0f7fa;
+    }
+
+    // Styling untuk sel tabel yang lebih rapi
+    td,
+    th {
+        border-left: 1px solid #ddd;
+        border-top: 1px solid #ddd;
+    }
+
+    // Menghapus border kiri dan atas pada baris pertama dan kolom pertama
+    th:first-child,
+    td:first-child {
+        border-left: none;
+    }
+
+    // Styling untuk tabel bordered dan dengan warna border yang lebih menonjol
+    .table-bordered {
+        border: 1px solid #007bff;
+    }
+
+    .border-primary {
+        border-color: #007bff !important;
+    }
+
+    // Add some space between table and container
+    .container {
+        margin-top: 30px;
+    }
+}
