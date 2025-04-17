@@ -41,7 +41,8 @@ class StatusController extends Controller
         return view('status', [
             'order' => $order,
             'damageDetails' => $damageDetails,
-            'totalBiaya' => $totalBiaya
+            'totalBiaya' => $totalBiaya,
+            'kurir' => $kurir
         ]);
     }
 }

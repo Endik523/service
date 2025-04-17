@@ -31,12 +31,11 @@ class KurirResource extends Resource
                     ->required()
                     ->maxLength(255),
 
-                // Input untuk Foto (URL)
+                // Input untuk Foto (URL atau Path Relatif)
                 Forms\Components\TextInput::make('photo')
                     ->label('Foto (URL)')
-                    ->url()
-                    ->nullable()
-                    ->helperText('Masukkan URL foto kurir'),
+                    ->nullable() // Menjadikan input ini opsional
+                    ->helperText('Masukkan URL atau path relatif foto kurir'),
 
                 // Input untuk Plat Motor
                 Forms\Components\TextInput::make('plat_motor')
@@ -58,6 +57,7 @@ class KurirResource extends Resource
             ]);
     }
 
+
     public static function table(Table $table): Table
     {
         return $table
@@ -66,10 +66,20 @@ class KurirResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nama Kurir'),
 
-                // Kolom untuk Foto Kurir (menggunakan URL)
-                ImageColumn::make('photo')
-                    ->label('Foto'), // Ini untuk menampilkan gambar dari URL
+                // Kolom untuk Foto Kurir (URL atau asset)
+                Tables\Columns\ImageColumn::make('photo')
+                    ->label('Foto')
+                    ->getStateUsing(function ($record) {
+                        $photo = $record->photo;
 
+                        // Jika foto adalah URL eksternal, tampilkan langsung
+                        if (filter_var($photo, FILTER_VALIDATE_URL)) {
+                            return $photo;
+                        }
+
+                        // Jika foto adalah path relatif, gunakan asset() untuk mendapatkan URL lengkap
+                        return asset($photo); // Menampilkan gambar dari folder public
+                    }),
 
                 // Kolom untuk Plat Motor
                 Tables\Columns\TextColumn::make('plat_motor')
@@ -95,6 +105,7 @@ class KurirResource extends Resource
                 ]),
             ]);
     }
+
 
     public static function getRelations(): array
     {
