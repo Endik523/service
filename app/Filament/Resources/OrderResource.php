@@ -68,8 +68,9 @@ class OrderResource extends Resource
                 //
             ])
             ->actions([
+
+                // Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
