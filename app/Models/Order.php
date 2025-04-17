@@ -27,4 +27,10 @@ class Order extends Model
     {
         return $this->hasMany(DamageDetails::class, 'id_order', 'id');
     }
+
+    // Relasi dengan kurir
+    public function kurir()
+    {
+        return $this->hasMany(Kurir::class);
+    }
 }

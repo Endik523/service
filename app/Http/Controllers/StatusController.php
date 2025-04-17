@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DamageDetails;
+use App\Models\Kurir;
 use App\Models\Order;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
@@ -29,6 +30,9 @@ class StatusController extends Controller
 
             // Hitung total biaya
             $totalBiaya = $damageDetails->sum('harga_barang');
+
+            // Ambil data kurir berdasarkan order_id
+            $kurir = Kurir::where('order_id', $id_order)->first();
         } catch (\Exception $e) {
             return redirect()->route('dashboard')->with('error', 'Order tidak ditemukan');
         }
