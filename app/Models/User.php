@@ -3,9 +3,13 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Enums\Role;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Order;
+
 
 class User extends Authenticatable
 {
@@ -23,6 +27,7 @@ class User extends Authenticatable
         'password',
     ];
 
+    // Menentukan relasi dengan Order
     public function orders()
     {
         return $this->hasMany(Order::class);
@@ -49,5 +54,21 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    protected $casts = [
+        'role' => Role::class,
+    ];
+
+    // Helper method to check if user is an admin
+    public function isAdmin(): bool
+    {
+        return $this->role === Role::ADMIN;
+    }
+
+    // Helper method to check if user is a regular user
+    public function isUser(): bool
+    {
+        return $this->role === Role::USER;
     }
 }

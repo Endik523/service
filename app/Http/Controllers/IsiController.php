@@ -33,14 +33,28 @@ class IsiController extends Controller
         }
 
         try {
-            $validated = $request->validate([
+            // Ubah validasi untuk alamat berdasarkan nilai jemput_barang
+            $validationRules = [
                 'username' => 'required|string|max:100',
                 'barang' => 'required|string|max:50',
-                'alamat' => 'required|string',
                 'tgl_pesan' => 'required|date',
                 'jemput_barang' => 'required|string',
                 'pesan' => 'nullable|string',
-            ]);
+            ];
+
+            // Hanya wajibkan alamat jika jemput_barang = 'yes'
+            if ($request->jemput_barang === 'yes') {
+                $validationRules['alamat'] = 'required|string';
+            } else {
+                $validationRules['alamat'] = 'nullable|string';
+
+                // Pastikan ada nilai default untuk alamat jika kosong
+                if (empty($request->alamat)) {
+                    $request->merge(['alamat' => '-']);
+                }
+            }
+
+            $validated = $request->validate($validationRules);
 
             // Fungsi untuk menghasilkan random_id unik
             $randomId = $this->generateUniqueRandomId();
@@ -50,7 +64,7 @@ class IsiController extends Controller
 
             // Simpan data pesanan dengan random_id yang unik dan user_id yang terkait
             $validated['random_id'] = $randomId;
-            $validated['user_id'] = $userId; // Menambahkan user_id yang diambil dari Auth
+            $validated['user_id'] = $userId;
 
             // Simpan order
             $order = Order::create($validated);

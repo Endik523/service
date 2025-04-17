@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IsiController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\StatusController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ServiceController;
@@ -10,9 +11,16 @@ use App\Http\Controllers\KerusakanController;
 
 
 
-Route::get('/status', function () {
-    return view('status');
-})->name('status');
+// Route::get('/status', function () {
+//     return view('status');
+// })->name('status');
+
+Route::get('/status', [StatusController::class, 'show'])->name('status');
+
+// Route::get('/status/{id}', [StatusController::class, 'show'])->name('status');
+
+// Route::get('/status/{id_order}', [StatusController::class, 'show'])->name('status');
+
 
 Route::get('/pembayaran', function () {
     return view('pembayaran');
@@ -38,16 +46,14 @@ Route::post('login', [LoginController::class, 'login']);
 // Route::get('/', [DashboardController::class, 'showOrders'])->name('dashboard');
 Route::get('/', [DashboardController::class, 'showOrders'])->middleware('auth')->name('dashboard');
 
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
 // Route::get('/login1', function () {
 //     return view('login');
 // })->name('login1');
 
 
-Route::get('/statusadmin', function () {
-    return view('backoffice/statusadmin');
-})->name('statusadmin');
+// Route::get('/statusadmin', function () {
+//     return view('backoffice/statusadmin');
+// })->name('statusadmin');
 
 Route::get('/payment', function () {
     return view('backoffice/paymentadmin');

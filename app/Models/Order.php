@@ -18,6 +18,13 @@ class Order extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+
+    // Di model Order
+    public function damageDetails()
+    {
+        return $this->hasMany(DamageDetails::class, 'id_order', 'id');
     }
 }

@@ -39,17 +39,29 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
+        // Attempt login with provided credentials
         if (Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
             $request->session()->regenerate();
 
-            // Redirect ke route dashboard yang sudah didefinisikan
+            // Get the authenticated user
+            $user = Auth::user();
+            // dd($user);
+
+            // Redirect based on role using helper methods
+            if ($user->isAdmin()) {
+                return redirect('/admin');
+            }
+
             return redirect()->route('dashboard');
         }
 
+        // If login fails, return with an error message
         return back()->withErrors([
             'email' => 'Email atau password yang Anda masukkan tidak cocok.',
         ]);
     }
+
+
 
     public function logout(Request $request)
     {

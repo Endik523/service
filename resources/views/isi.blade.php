@@ -70,6 +70,7 @@
     </div>
 @endsection
 
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const contactForm = document.getElementById('contactForm');
@@ -137,9 +138,9 @@
             // Buat URL WhatsApp dengan data form yang tersimpan
             const whatsappUrl = "https://web.whatsapp.com/send?phone=6285755060739&text=Hai%20Admin.%0ANama%20Saya%20%3A%20*" +
                 encodeURIComponent(formValues.username) + "*%0ABarang%20Saya%20%3A%20*" +
-                encodeURIComponent(formValues.barang) + "*%0AAlamat%20%3A%20*" +
+                encodeURIComponent(formValues.barang) + "*%0AAlamat%20Saya%20%3A%20*" +
                 encodeURIComponent(formValues.alamat) + "*%0ATanggal%20Service%20%3A%20*" +
-                encodeURIComponent(formValues.tgl_pesan) + "*%0A%0A*Jemput%20Barang%20Di%20Rumah*%3A%0A" +
+                encodeURIComponent(formValues.tgl_pesan) + "*%0A%0AJemput%20Barang%20Di%20Rumah%3A%0A*" +
                 encodeURIComponent(formValues.jemput_barang) + "*%0A%0A*Keluhan*%3A%0A" +
                 encodeURIComponent(formValues.pesan);
 
@@ -148,3 +149,109 @@
         });
     });
 </script>
+
+
+
+{{--
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const contactForm = document.getElementById('contactForm');
+        const successMessage = document.getElementById('successMessage');
+        const whatsappButton = document.getElementById('whatsappButton');
+        const jemputBarangSelect = document.getElementById('jemput_barang');
+        const alamatContainer = document.getElementById('alamatContainer');
+        const alamatInput = document.getElementById('alamat');
+
+        // Menyembunyikan alamat container saat halaman pertama kali dimuat
+        alamatContainer.style.display = 'none';
+
+        // Fungsi untuk mengontrol visibilitas input alamat
+        jemputBarangSelect.addEventListener('change', function () {
+            if (this.value === 'yes') {
+                alamatContainer.style.display = 'block';  // Menampilkan alamat
+                alamatInput.setAttribute('required', 'required'); // Tambahkan required attribute
+            } else {
+                alamatContainer.style.display = 'none';   // Menyembunyikan alamat
+                alamatInput.removeAttribute('required');  // Hapus required attribute
+                alamatInput.value = '-';  // Set nilai default jika tidak dijemput
+            }
+        });
+
+        // Menyimpan referensi data form
+        let formValues = {};
+
+        contactForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            // Simpan semua nilai form
+            formValues = {
+                username: document.getElementById('username').value,
+                barang: document.getElementById('barang').value,
+                tgl_pesan: document.getElementById('tgl_pesan').value,
+                jemput_barang: document.getElementById('jemput_barang').value,
+                pesan: document.getElementById('pesan').value
+            };
+
+            // Ambil nilai alamat hanya jika jemput barang = yes
+            if (jemputBarangSelect.value === 'yes') {
+                formValues.alamat = alamatInput.value;
+            } else {
+                formValues.alamat = '-'; // Nilai default jika tidak perlu dijemput
+            }
+
+            // Kirim data ke server menggunakan fetch
+            const formData = new FormData(this);
+
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+                .then(response => {
+                    // Check if response is ok first
+                    if (!response.ok) {
+                        return response.json().then(errorData => {
+                            throw new Error('Server error: ' + JSON.stringify(errorData));
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Sukses:', data);
+
+                    // Sembunyikan form
+                    contactForm.style.display = 'none';
+
+                    // Tampilkan pesan sukses dan tombol WhatsApp
+                    successMessage.style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan: ' + error.message);
+                });
+        });
+
+        // Event listener untuk tombol WhatsApp
+        whatsappButton.addEventListener('click', function () {
+            // Alamat hanya dimasukkan jika jemput_barang = yes
+            const alamatText = formValues.jemput_barang === 'yes'
+                ? "Alamat Saya : *" + encodeURIComponent(formValues.alamat) + "*%0A"
+                : "";
+
+            // Buat URL WhatsApp dengan data form yang tersimpan
+            const whatsappUrl = "https://web.whatsapp.com/send?phone=6285755060739&text=Hai%20Admin.%0ANama%20Saya%20%3A%20*" +
+                encodeURIComponent(formValues.username) + "*%0ABarang%20Saya%20%3A%20*" +
+                encodeURIComponent(formValues.barang) + "*%0A" +
+                alamatText +
+                "Tanggal%20Service%20%3A%20*" +
+                encodeURIComponent(formValues.tgl_pesan) + "*%0A%0AJemput%20Barang%20Di%20Rumah%3A%0A*" +
+                encodeURIComponent(formValues.jemput_barang) + "*%0A%0A*Keluhan*%3A%0A" +
+                encodeURIComponent(formValues.pesan);
+
+            // Buka WhatsApp di tab baru
+            window.open(whatsappUrl, '_blank');
+        });
+    });
+</script> --}}

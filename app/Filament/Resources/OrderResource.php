@@ -40,6 +40,8 @@ class OrderResource extends Resource
                 ->required(),
             Forms\Components\Textarea::make('jemput_barang')
                 ->required(),
+            Forms\Components\Textarea::make('masalah_kerusakan')
+                ->required(),
         ]);
     }
 
@@ -47,6 +49,7 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('random_id')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('username')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('barang')->sortable()->searchable(),
@@ -54,6 +57,8 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('tgl_pesan')->sortable(),
                 Tables\Columns\TextColumn::make('pesan')->sortable(),
                 Tables\Columns\TextColumn::make('jemput_barang')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('masalah_kerusakan'),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('d M Y, H:i')->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
@@ -64,6 +69,7 @@ class OrderResource extends Resource
             ])
             ->actions([
                 Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -82,7 +88,7 @@ class OrderResource extends Resource
         return [
             'index' => Pages\ListOrders::route('/'),
             // 'create' => Pages\CreateOrder::route('/create'),
-            // 'edit' => Pages\EditOrder::route('/{record}/edit'),
+            'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
     }
 }
