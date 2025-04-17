@@ -66,15 +66,16 @@ class KurirResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nama Kurir'),
 
-                // Kolom untuk Foto Kurir (URL atau asset)
+                // Kolom untuk Foto Kurir (menggunakan URL atau asset)
                 Tables\Columns\ImageColumn::make('photo')
                     ->label('Foto')
                     ->getStateUsing(function ($record) {
+                        // Cek apakah photo adalah URL eksternal atau path relatif
                         $photo = $record->photo;
 
                         // Jika foto adalah URL eksternal, tampilkan langsung
                         if (filter_var($photo, FILTER_VALIDATE_URL)) {
-                            return $photo;
+                            return $photo; // Menggunakan URL eksternal
                         }
 
                         // Jika foto adalah path relatif, gunakan asset() untuk mendapatkan URL lengkap
@@ -106,7 +107,6 @@ class KurirResource extends Resource
             ]);
     }
 
-
     public static function getRelations(): array
     {
         return [
@@ -117,7 +117,7 @@ class KurirResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListKurirs::route('/'),
+            'index' => Pages\ListKurir::route('/'),
             'create' => Pages\CreateKurir::route('/create'),
             'edit' => Pages\EditKurir::route('/{record}/edit'),
         ];
