@@ -64,7 +64,8 @@ class KurirResource extends Resource
             ->columns([
                 // Kolom untuk Nama Kurir
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Nama Kurir'),
+                    ->label('Nama Kurir')
+                    ->searchable(),  // Menambahkan pencarian pada kolom ini
 
                 // Kolom untuk Foto Kurir (menggunakan URL atau asset)
                 Tables\Columns\ImageColumn::make('photo')
@@ -84,21 +85,23 @@ class KurirResource extends Resource
 
                 // Kolom untuk Plat Motor
                 Tables\Columns\TextColumn::make('plat_motor')
-                    ->label('Plat Motor'),
+                    ->label('Plat Motor')
+                    ->searchable(),  // Menambahkan pencarian pada kolom ini
 
                 // Kolom untuk Merk Motor
                 Tables\Columns\TextColumn::make('merk_motor')
-                    ->label('Merk Motor'),
+                    ->label('Merk Motor')
+                    ->searchable(),  // Menambahkan pencarian pada kolom ini
 
                 // Kolom untuk Order ID (mengambil data dari relasi)
                 Tables\Columns\TextColumn::make('order.id')
-                    ->label('Order ID'),
+                    ->label('Order ID')
+                    ->searchable(),  // Menambahkan pencarian pada kolom ini
             ])
-            ->filters([
-                //
-            ])
+            ->filters([/* Filter yang diperlukan */])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -106,6 +109,7 @@ class KurirResource extends Resource
                 ]),
             ]);
     }
+
 
     public static function getRelations(): array
     {

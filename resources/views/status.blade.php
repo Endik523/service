@@ -90,7 +90,7 @@
             </div>
         @else
             <div class="alert alert-warning text-center mt-5">
-                Tidak ada detail kerusakan untuk pesanan ini.
+                TOTAL BIAYA BELUM DI HITUNG
             </div>
         @endif
 

@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\MasalahKerusakanResource\Pages;
 use App\Filament\Resources\MasalahKerusakanResource\RelationManagers;
-use App\Models\DamageDetail; // Pastikan untuk menggunakan model yang benar
+use App\Models\DamageDetail;
 use App\Models\DamageDetails;
 use Filament\Forms;
 use Filament\Forms\Form;
