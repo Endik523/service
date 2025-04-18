@@ -40,6 +40,11 @@ class MasalahKerusakanResource extends Resource
                     ->numeric()
                     ->maxLength(10),
 
+                Forms\Components\TextInput::make('masalah_kerusaka')
+                    ->label('Masalah Kerusakan')
+                    ->numeric()
+                    ->maxLength(10),
+
             ]);
     }
 
@@ -64,6 +69,11 @@ class MasalahKerusakanResource extends Resource
 
                 TextColumn::make('harga_barang')
                     ->label('Harga Barang')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('masalah_kerusaka')
+                    ->label('Masalah Kerusakan')
                     ->sortable()
                     ->searchable(),
 

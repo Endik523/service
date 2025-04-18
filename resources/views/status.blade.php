@@ -9,27 +9,10 @@
             <p style="font-weight: bold;">STATUS BELUM TERSEDIA</p>
         </div>
     @else
-        <!-- Menampilkan Masalah Kerusakan -->
-        @if ($order && $order->masalah_kerusakan)
-            <div style="margin-top: 120px;">
-                <h3 class="text-center mb-4" style="font-weight: bold; font-size: 25px;">Masalah Kerusakan</h3>
-                <table class="tablee" style="max-width: 800px; margin: 0 auto;">
-                    <tbody>
-                        <tr>
-                            <td>
-                                <p style="margin-bottom: 0px;">
-                                    {{ $order->masalah_kerusakan ?? 'Deskripsi kerusakan tidak tersedia.' }}
-                                </p>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        @endif
 
         <!-- Display Kurir Information -->
         @if ($kurir)
-            <div style="margin-top: 50px;">
+            <div style="margin-top: 100px;">
                 <h3 class="text-center mb-4" style="font-weight: bold; font-size: 25px;">Informasi Kurir</h3>
                 <table class="tablee" style="width: 100%; max-width: 500px; margin: 0 auto;">
                     <tr>
@@ -56,9 +39,29 @@
             </div>
         @endif
 
+        <!-- Menampilkan Masalah Kerusakan -->
+        @if ($order && $order->damageDetails->isNotEmpty())
+            <div style="margin-top: 50px;">
+                <h3 class="text-center mb-4" style="font-weight: bold; font-size: 25px;">Masalah Kerusakan</h3>
+                <table class="tablee" style="max-width: 800px; margin: 0 auto;">
+                    <tbody>
+                        @foreach($order->damageDetails as $damageDetail)
+                            <tr>
+                                <td>
+                                    <p style="margin-bottom: 0px;">
+                                        {{ $damageDetail->masalah_kerusakan ?? 'Deskripsi kerusakan tidak tersedia.' }}
+                                    </p>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
+
         <!-- Menampilkan Total Biaya -->
         @if ($damageDetails->isNotEmpty())
-            <div style="margin-top: 80px;">
+            <div style="margin-top: 50px;">
                 <h3 class="text-center mb-4" style="font-weight: bold; font-size: 25px;">Total Biaya</h3>
                 <table class="tablee" style="width: 100%; max-width: 500px; margin: 0 auto;">
                     <thead>
