@@ -16,6 +16,10 @@
                 <h3 class="text-center mb-4" style="font-weight: bold; font-size: 25px;">Informasi Kurir</h3>
                 <table class="tablee" style="width: 100%; max-width: 500px; margin: 0 auto;">
                     <tr>
+                        <td style="font-weight: bold;">ID:</td>
+                        <td>{{ $kurir->order_id }}</td>
+                    </tr>
+                    <tr>
                         <td style="font-weight: bold;">Nama Kurir:</td>
                         <td>{{ $kurir->name }}</td>
                     </tr>
