@@ -40,8 +40,8 @@ class MasalahKerusakanResource extends Resource
                     ->numeric()
                     ->maxLength(10),
 
-                Forms\Components\Textarea::make('masalah_kerusakan')
-                    ->required(),
+                // Forms\Components\Textarea::make('masalah_kerusakan')
+                //     ->required(),
 
 
 
@@ -73,10 +73,10 @@ class MasalahKerusakanResource extends Resource
                     ->sortable()
                     ->searchable(),
 
-                TextColumn::make('masalah_kerusakan')
-                    ->label('Masalah Kerusakan')
-                    ->sortable()
-                    ->searchable(),
+                // TextColumn::make('masalah_kerusakan')
+                //     ->label('Masalah Kerusakan')
+                //     ->sortable()
+                //     ->searchable(),
 
             ])
             ->filters([

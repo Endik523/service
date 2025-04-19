@@ -40,8 +40,8 @@ class OrderResource extends Resource
                 ->required(),
             Forms\Components\Textarea::make('jemput_barang')
                 ->required(),
-            // Forms\Components\Textarea::make('masalah_kerusakan')
-            //     ->required(),
+            Forms\Components\Textarea::make('masalah_kerusakan')
+                ->required(),
         ]);
     }
 
@@ -57,7 +57,7 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('tgl_pesan')->sortable(),
                 Tables\Columns\TextColumn::make('pesan')->sortable(),
                 Tables\Columns\TextColumn::make('jemput_barang')->sortable()->searchable(),
-                // Tables\Columns\TextColumn::make('masalah_kerusakan'),
+                Tables\Columns\TextColumn::make('masalah_kerusakan'),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('d M Y, H:i')->sortable(),

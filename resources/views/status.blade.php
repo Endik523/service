@@ -156,24 +156,23 @@
         @endif
 
         <!-- Menampilkan Masalah Kerusakan -->
-        @if ($order && $order->damageDetails->isNotEmpty())
+        @if ($order)
             <div id="masalah-kerusakan" style="margin-top: 50px;">
                 <h3 class="text-center mb-4" style="font-weight: bold; font-size: 25px;">Masalah Kerusakan</h3>
                 <table class="tablee" style="max-width: 800px; margin: 0 auto;">
                     <tbody>
-                        @foreach($order->damageDetails as $damageDetail)
-                            <tr>
-                                <td>
-                                    <p style="margin-bottom: 0px;">
-                                        {{ $damageDetail->masalah_kerusakan ?? 'Deskripsi kerusakan tidak tersedia.' }}
-                                    </p>
-                                </td>
-                            </tr>
-                        @endforeach
+                        <tr>
+                            <td>
+                                <p style="margin-bottom: 0px;">
+                                    {{ $order->masalah_kerusakan ?? 'Deskripsi kerusakan tidak tersedia.' }}
+                                </p>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         @endif
+
 
         <!-- Menampilkan Total Biaya -->
         @if ($damageDetails->isNotEmpty())
