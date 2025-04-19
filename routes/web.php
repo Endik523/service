@@ -31,7 +31,9 @@ Route::get('/isi', function () {
 Route::get('/admin/isi', [IsiController::class, 'form'])->name('admin.isi');
 Route::post('/isi', [IsiController::class, 'store'])->name('isi.store');
 
-
+Route::get('admin/login', function () {
+    abort(404);  // Menampilkan halaman 404 jika seseorang mencoba mengakses /admin/login
+});
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login']);
 

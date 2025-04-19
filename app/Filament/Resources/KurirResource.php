@@ -19,6 +19,8 @@ class KurirResource extends Resource
 {
     protected static ?string $model = Kurir::class;
 
+    protected static ?string $navigationGroup = 'Orders';
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form

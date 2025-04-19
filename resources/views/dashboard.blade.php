@@ -29,7 +29,7 @@
                                         <p class="mb-2">ID-Order:</p>
                                         <p class="text-end ms-auto mb-2"
                                             style=" font-size: 15px; font-weight: bold; color: #bd8b03;">
-                                            {{ $order->random_id }}
+                                            {{ $order->id }}
                                         </p>
                                     </div>
 

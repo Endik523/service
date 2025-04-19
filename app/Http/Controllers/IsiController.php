@@ -56,14 +56,14 @@ class IsiController extends Controller
 
             $validated = $request->validate($validationRules);
 
-            // Fungsi untuk menghasilkan random_id unik
-            $randomId = $this->generateUniqueRandomId();
+            // // Fungsi untuk menghasilkan random_id unik
+            // $randomId = $this->generateUniqueRandomId();
 
             // Ambil user_id dari pengguna yang sedang login
             $userId = Auth::id();
 
             // Simpan data pesanan dengan random_id yang unik dan user_id yang terkait
-            $validated['random_id'] = $randomId;
+            // $validated['random_id'] = $randomId;
             $validated['user_id'] = $userId;
 
             // Simpan order
@@ -85,19 +85,19 @@ class IsiController extends Controller
     }
 
 
-    // Fungsi untuk menghasilkan random_id yang unik
-    private function generateUniqueRandomId()
-    {
-        do {
-            // Menghasilkan random_id 4 digit
-            $randomId = rand(1000, 9999);
+    // // Fungsi untuk menghasilkan random_id yang unik
+    // private function generateUniqueRandomId()
+    // {
+    //     do {
+    //         // Menghasilkan random_id 4 digit
+    //         $randomId = rand(1000, 9999);
 
-            // Periksa apakah random_id sudah ada di database
-            $existingOrder = Order::where('random_id', $randomId)->first();
-        } while ($existingOrder); // Jika ada duplikasi, coba lagi
+    //         // Periksa apakah random_id sudah ada di database
+    //         $existingOrder = Order::where('random_id', $randomId)->first();
+    //     } while ($existingOrder); // Jika ada duplikasi, coba lagi
 
-        return $randomId;
-    }
+    //     return $randomId;
+    // }
 
 
     // Tampilkan halaman status pesanan
