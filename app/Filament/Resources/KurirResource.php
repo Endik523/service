@@ -27,35 +27,48 @@ class KurirResource extends Resource
     {
         return $form
             ->schema([
-                // Input untuk Nama Kurir
                 Forms\Components\TextInput::make('name')
                     ->label('Nama Kurir')
                     ->required()
                     ->maxLength(255),
 
-                // Input untuk Foto (URL atau Path Relatif)
                 Forms\Components\TextInput::make('photo')
                     ->label('Foto (URL)')
-                    ->nullable() // Menjadikan input ini opsional
+                    ->nullable()
                     ->helperText('Masukkan URL atau path relatif foto kurir'),
 
-                // Input untuk Plat Motor
                 Forms\Components\TextInput::make('plat_motor')
                     ->label('Plat Motor')
                     ->required()
                     ->maxLength(255),
 
-                // Input untuk Merk Motor
                 Forms\Components\TextInput::make('merk_motor')
                     ->label('Merk Motor')
                     ->required()
                     ->maxLength(255),
 
-                // Relasi dengan Order (menggunakan order_id sebagai foreign key)
                 Forms\Components\Select::make('order_id')
                     ->label('Order')
-                    ->relationship('order', 'id') // Menampilkan random_id dari Order
-                    ->required(),
+                    ->options(function () {
+                        // Hanya tampilkan order yang jemput_barang = 'YES' dan belum memiliki kurir
+                        return \App\Models\Order::where('jemput_barang', 'YES')
+                            ->whereDoesntHave('kurir')
+                            ->get()
+                            ->mapWithKeys(function ($order) {
+                                $tglPesanFormatted = \Carbon\Carbon::parse($order->tgl_pesan)->format('Y-m-d');
+                                return [
+                                    $order->id => $order->id . ' - ' . $order->username . ' - ' . $tglPesanFormatted
+                                ];
+                            });
+                    })
+                    ->required()
+                    ->default(function () {
+                        // Jika ada parameter order_id di URL, gunakan sebagai default
+                        if (request()->has('order_id')) {
+                            return request()->get('order_id');
+                        }
+                        return null;
+                    }),
             ]);
     }
 
@@ -64,51 +77,38 @@ class KurirResource extends Resource
     {
         return $table
             ->columns([
-                // Kolom untuk Nama Kurir
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label('Nama Kurir')
-                    ->searchable(),  // Menambahkan pencarian pada kolom ini
+                    ->searchable(),
 
-                // Kolom untuk Foto Kurir (menggunakan URL atau asset)
-                Tables\Columns\ImageColumn::make('photo')
-                    ->label('Foto')
-                    ->getStateUsing(function ($record) {
-                        // Cek apakah photo adalah URL eksternal atau path relatif
-                        $photo = $record->photo;
+                ImageColumn::make('photo')
+                    ->label('Foto'),
 
-                        // Jika foto adalah URL eksternal, tampilkan langsung
-                        if (filter_var($photo, FILTER_VALIDATE_URL)) {
-                            return $photo; // Menggunakan URL eksternal
-                        }
+                TextColumn::make('plat_motor')
+                    ->label('Plat Motor'),
 
-                        // Jika foto adalah path relatif, gunakan asset() untuk mendapatkan URL lengkap
-                        return asset($photo); // Menampilkan gambar dari folder public
-                    }),
+                TextColumn::make('merk_motor')
+                    ->label('Merk Motor'),
 
-                // Kolom untuk Plat Motor
-                Tables\Columns\TextColumn::make('plat_motor')
-                    ->label('Plat Motor')
-                    ->searchable(),  // Menambahkan pencarian pada kolom ini
+                TextColumn::make('order.username')
+                    ->label('Pelanggan')
+                    ->searchable(),
 
-                // Kolom untuk Merk Motor
-                Tables\Columns\TextColumn::make('merk_motor')
-                    ->label('Merk Motor')
-                    ->searchable(),  // Menambahkan pencarian pada kolom ini
+                TextColumn::make('order.barang')
+                    ->label('Barang'),
 
-                // Kolom untuk Order ID (mengambil data dari relasi)
-                Tables\Columns\TextColumn::make('order.id')
-                    ->label('Order ID')
-                    ->searchable(),  // Menambahkan pencarian pada kolom ini
+                TextColumn::make('order.alamat')
+                    ->label('Alamat Jemput'),
             ])
-            ->filters([/* Filter yang diperlukan */])
+            ->filters([
+                // Filter tambahan jika diperlukan
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 

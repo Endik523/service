@@ -12,7 +12,7 @@
                 @foreach($orders as $order)
                     <div class="col-12 col-md-3 mb-3" style="min-width: 370px">
                         <!-- 1 kolom per baris di perangkat kecil dan 4 kolom per baris di perangkat lebih besar -->
-                        <a href="{{ route('status', ['id_order' => $order->id]) }}" class="card-link">
+                        <a href="{{ route('status', ['order_id' => $order->id]) }}" class="card-link">
                             <!-- Link menuju status{id_order} -->
                             <div class="card">
 
@@ -29,7 +29,7 @@
                                         <p class="mb-2">ID-Order:</p>
                                         <p class="text-end ms-auto mb-2"
                                             style=" font-size: 15px; font-weight: bold; color: #bd8b03;">
-                                            {{ $order->id }}
+                                            {{ $order->id_random }}
                                         </p>
                                     </div>
 

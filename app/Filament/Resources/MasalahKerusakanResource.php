@@ -25,10 +25,24 @@ class MasalahKerusakanResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('id_order')
-                    ->label('ID ORDER (bukan id random)')
-                    ->required()
-                    ->maxLength(255),
+                // Forms\Components\TextInput::make('id_order')
+                //     ->label('ID ORDER (bukan id random)')
+                //     ->required()
+                //     ->maxLength(255),
+
+                Forms\Components\Select::make('order_id')
+                    ->label('Order')
+                    ->options(function () {
+                        // Ambil data dari model Order dan gabungkan 'id', 'username', dan 'tgl_pesan'
+                        return \App\Models\Order::all()->mapWithKeys(function ($order) {
+                            // Pastikan tgl_pesan menjadi objek Carbon
+                            $tglPesanFormatted = \Carbon\Carbon::parse($order->tgl_pesan)->format('Y-m-d');
+                            return [
+                                $order->id => $order->id . ' - ' . $order->username . ' - ' . $tglPesanFormatted
+                            ];
+                        });
+                    })
+                    ->required(),
 
                 Forms\Components\TextInput::make('nama_barang')
                     ->label('Nama Barang')
@@ -53,12 +67,12 @@ class MasalahKerusakanResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')
-                    ->label('ID')
-                    ->sortable()
-                    ->searchable(),
+                // TextColumn::make('id')
+                //     ->label('ID')
+                //     ->sortable()
+                //     ->searchable(),
 
-                TextColumn::make('id_order')
+                TextColumn::make('order_id')
                     ->label('ID Order')
                     ->sortable()
                     ->searchable(),

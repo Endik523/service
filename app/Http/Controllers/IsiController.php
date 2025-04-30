@@ -56,14 +56,11 @@ class IsiController extends Controller
 
             $validated = $request->validate($validationRules);
 
-            // // Fungsi untuk menghasilkan random_id unik
-            // $randomId = $this->generateUniqueRandomId();
+            // Generate id_random unik
+            $validated['id_random'] = $this->generateUniqueRandomId();
 
             // Ambil user_id dari pengguna yang sedang login
             $userId = Auth::id();
-
-            // Simpan data pesanan dengan random_id yang unik dan user_id yang terkait
-            // $validated['random_id'] = $randomId;
             $validated['user_id'] = $userId;
 
             // Simpan order
@@ -84,21 +81,33 @@ class IsiController extends Controller
         }
     }
 
+    // Fungsi untuk menghasilkan id_random yang unik (3 huruf + 4 angka)
+    private function generateUniqueRandomId()
+    {
+        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $numbers = '0123456789';
 
-    // // Fungsi untuk menghasilkan random_id yang unik
-    // private function generateUniqueRandomId()
-    // {
-    //     do {
-    //         // Menghasilkan random_id 4 digit
-    //         $randomId = rand(1000, 9999);
+        do {
+            // Generate 3 random letters
+            $letters = '';
+            for ($i = 0; $i < 3; $i++) {
+                $letters .= $characters[rand(0, strlen($characters) - 1)];
+            }
 
-    //         // Periksa apakah random_id sudah ada di database
-    //         $existingOrder = Order::where('random_id', $randomId)->first();
-    //     } while ($existingOrder); // Jika ada duplikasi, coba lagi
+            // Generate 4 random numbers
+            $numbersPart = '';
+            for ($i = 0; $i < 4; $i++) {
+                $numbersPart .= $numbers[rand(0, strlen($numbers) - 1)];
+            }
 
-    //     return $randomId;
-    // }
+            $idRandom = $letters . $numbersPart;
 
+            // Periksa apakah id_random sudah ada di database
+            $existingOrder = Order::where('id_random', $idRandom)->first();
+        } while ($existingOrder); // Jika ada duplikasi, coba lagi
+
+        return $idRandom;
+    }
 
     // Tampilkan halaman status pesanan
     public function status($id)

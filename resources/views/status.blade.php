@@ -129,7 +129,7 @@
                 <table class="tablee" style="width: 100%; max-width: 500px; margin: 0 auto;">
                     <tr>
                         <td style="font-weight: bold;">ID:</td>
-                        <td>{{ $kurir->order_id }}</td>
+                        <td>{{ $order->id_random ?? $detail->id_order }}</td>
                     </tr>
                     <tr>
                         <td style="font-weight: bold;">Nama Kurir:</td>
@@ -192,7 +192,7 @@
                         @foreach ($damageDetails as $index => $detail)
                             <tr>
                                 <td style="font-weight: bold;">{{ $index + 1 }}</td>
-                                <td>{{ $detail->id_order }}</td>
+                                <td>{{ $order->id_random ?? $detail->id_order }}</td>
                                 <td>{{ $detail->nama_barang }}</td>
                                 <td>Rp {{ number_format($detail->harga_barang, 0, ',', '.') }}</td>
                             </tr>

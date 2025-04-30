@@ -13,16 +13,16 @@ class StatusController extends Controller
     // Method untuk menampilkan status menggunakan query parameter
     public function show(Request $request)
     {
-        $id_order = $request->query('id_order');
-        if (!$id_order) {
+        $order_id = $request->query('order_id');
+        if (!$order_id) {
             return redirect()->route('dashboard')->with('error', 'ID order tidak ditemukan');
         }
 
         try {
-            $order = Order::findOrFail($id_order);
-            $damageDetails = DamageDetails::where('id_order', $id_order)->get();
+            $order = Order::findOrFail($order_id);
+            $damageDetails = DamageDetails::where('order_id', $order_id)->get();
             $totalBiaya = $damageDetails->sum('harga_barang');
-            $kurir = Kurir::where('order_id', $id_order)->first();
+            $kurir = Kurir::where('order_id', $order_id)->first();
         } catch (\Exception $e) {
             return redirect()->route('dashboard')->with('error', 'Order tidak ditemukan');
         }
@@ -40,7 +40,7 @@ class StatusController extends Controller
     {
         // Ambil data order berdasarkan ID
         $order = Order::findOrFail($orderId);
-        $damageDetails = DamageDetails::where('id_order', $orderId)->get();
+        $damageDetails = DamageDetails::where('order_id', $orderId)->get();
         $totalBiaya = $damageDetails->sum('harga_barang'); // Hitung total biaya
 
         // Memastikan instansiasi PDF terlebih dahulu
