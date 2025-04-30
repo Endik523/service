@@ -20,6 +20,7 @@ class KurirResource extends Resource
     protected static ?string $model = Kurir::class;
 
     protected static ?string $navigationGroup = 'Orders';
+    protected static ?string $navigationLabel = 'Kurir';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -104,7 +105,7 @@ class KurirResource extends Resource
                 // Filter tambahan jika diperlukan
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([

@@ -20,7 +20,7 @@
                                     <div class="d-flex align-items-center mb-2">
                                         <p class="mb-4">Status:</p>
                                         <div class="px-2 bg-transparent border border-warning text-center rounded text-warning py-1 ms-auto mb-4"
-                                            style="width: 100px; font-size: 12px;">
+                                            style="width: 100px; font-size: 13px; font-weight: bold;">
                                             {{ $order->status ?? 'Pending' }}
                                         </div>
                                     </div>

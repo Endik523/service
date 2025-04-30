@@ -19,7 +19,7 @@ class OrderResource extends Resource
     protected static ?string $model = Order::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationLabel = 'Orders';
+    protected static ?string $navigationLabel = 'Order';
     protected static ?string $modelLabel = 'Order';
     // protected static ?string $navigationGroup = 'Order Management';
 
@@ -46,10 +46,10 @@ class OrderResource extends Resource
             //         'YES' => 'Ya',
             //         'NO' => 'Tidak'
             //     ]),
-            Forms\Components\Select::make('status')
-                ->label('Status Pesanan')
-                ->options(Order::getStatuses())
-                ->required(),
+            // Forms\Components\Select::make('status')
+            //     ->label('Status Pesanan')
+            //     ->options(Order::getStatuses())
+            //     ->required(),
             Forms\Components\Textarea::make('masalah_kerusakan')
                 ->required(),
         ]);
@@ -79,13 +79,15 @@ class OrderResource extends Resource
                         Order::STATUS_DIBATALKAN => 'danger',
                         default => 'gray',
                     })
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('tgl_pesan')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('jemput_barang')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('masalah_kerusakan')
+                Tables\Columns\TextColumn::make('pesan')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('tgl_pesan')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('jemput_barang')
                     ->sortable()
                     ->searchable(),
                 // Tables\Columns\TextColumn::make('created_at')

@@ -15,11 +15,11 @@ class Order extends Model
     // ...
 
     // Konstanta untuk status
-    const STATUS_PENDING = 'pending';
-    const STATUS_PENJEMPUTAN = 'penjemputan';
-    const STATUS_DIPROSES = 'diproses';
-    const STATUS_SELESAI = 'selesai';
-    const STATUS_DIBATALKAN = 'dibatalkan';
+    const STATUS_PENDING = 'Pending';
+    const STATUS_PENJEMPUTAN = 'Penjemputan';
+    const STATUS_DIPROSES = 'Sedang Proses';
+    const STATUS_SELESAI = 'Selesai';
+    const STATUS_DIBATALKAN = 'Dibatalkan';
 
     // Daftar status dengan label
     public static function getStatuses(): array
