@@ -171,6 +171,7 @@ class RiwayatResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
                 // Action untuk cepat mengubah status
                 Tables\Actions\Action::make('updateStatus')
                     ->form([
@@ -232,6 +233,7 @@ class RiwayatResource extends Resource
             'index' => Pages\ListRiwayats::route('/'),
             // 'create' => Pages\CreateRiwayat::route('/create'),
             'edit' => Pages\EditRiwayat::route('/{record}/edit'),
+            'view' => Pages\EditRiwayat::route('/{record}'),
         ];
     }
 }

@@ -39,8 +39,19 @@ class IsiController extends Controller
                 'barang' => 'required|string|max:50',
                 'tgl_pesan' => 'required|date',
                 'jemput_barang' => 'required|string',
+                'no_telp' => 'required|string|max:20',
                 'pesan' => 'nullable|string',
+                // 'damagePhotos.*' => 'nullable|image|max:2048'
             ];
+
+            // Handle file upload
+            $photoPaths = [];
+            if ($request->hasFile('damagePhotos')) {
+                foreach ($request->file('damagePhotos') as $photo) {
+                    $path = $photo->store('damage_photos', 'public');
+                    $photoPaths[] = $path;
+                }
+            }
 
             // Hanya wajibkan alamat jika jemput_barang = 'yes'
             if ($request->jemput_barang === 'yes') {

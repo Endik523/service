@@ -1,76 +1,71 @@
 @extends('layouts.auth')
 
 @section('body')
-
-    <div style="margin-top: 120px;">
-        <h3 class="text-center mb-4">Daftar Pesanan Anda</h3>
+    <div class="order-list-container">
+        <div class="order-list-header">
+            <h2 class="order-list-title">Daftar Pesanan Anda</h2>
+            <p class="order-list-subtitle">Riwayat semua permintaan service Anda</p>
+        </div>
 
         @if($orders->isEmpty())
-            <div class="alert alert-warning text-center">Anda belum memiliki pesanan.</div>
+            <div class="empty-order-state">
+                <i class="fas fa-box-open empty-order-icon"></i>
+                <h3 class="empty-order-title">Belum Ada Pesanan</h3>
+                <p class="empty-order-text">Anda belum membuat pesanan service</p>
+                <a href="{{ route('isi') }}" class="btn btn-primary">
+                    <i class="fas fa-plus-circle me-2"></i> Buat Pesanan Baru
+                </a>
+            </div>
         @else
-            <div class="row justify-content-center"> <!-- Menambahkan justify-content-center untuk tengah -->
+            <div class="order-grid">
                 @foreach($orders as $order)
-                    <div class="col-12 col-md-3 mb-3" style="min-width: 370px">
-                        <!-- 1 kolom per baris di perangkat kecil dan 4 kolom per baris di perangkat lebih besar -->
-                        <a href="{{ route('status', ['order_id' => $order->id]) }}" class="card-link">
-                            <!-- Link menuju status{id_order} -->
-                            <div class="card">
+                    <a href="{{ route('status', ['order_id' => $order->id]) }}" class="order-card-link">
+                        <div class="order-card">
+                            <div class="order-card-header">
+                                <span class="order-id">#{{ $order->id_random }}</span>
+                                <span class="order-status-badge status-{{ strtolower($order->status ?? 'pending') }}">
+                                    {{ $order->status ?? 'Pending' }}
+                                </span>
+                            </div>
 
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <p class="mb-4">Status:</p>
-                                        <div class="px-2 bg-transparent border border-warning text-center rounded text-warning py-1 ms-auto mb-4"
-                                            style="width: 100px; font-size: 13px; font-weight: bold;">
-                                            {{ $order->status ?? 'Pending' }}
-                                        </div>
-                                    </div>
+                            <div class="order-card-body">
+                                <div class="order-info-item">
+                                    <i class="fas fa-user order-info-icon"></i>
+                                    <span class="order-info-label">Nama:</span>
+                                    <span class="order-info-value">{{ $order->username }}</span>
+                                </div>
 
-                                    <div class="d-flex align-items-center">
-                                        <p class="mb-2">ID-Order:</p>
-                                        <p class="text-end ms-auto mb-2"
-                                            style=" font-size: 15px; font-weight: bold; color: #bd8b03;">
-                                            {{ $order->id_random }}
-                                        </p>
-                                    </div>
+                                <div class="order-info-item">
+                                    <i class="fas fa-laptop order-info-icon"></i>
+                                    <span class="order-info-label">Barang:</span>
+                                    <span class="order-info-value">{{ $order->barang }}</span>
+                                </div>
 
-                                    <div class="d-flex align-items-center">
-                                        <p class="mb-2">Nama:</p>
-                                        <p class="text-end ms-auto mb-2">{{ $order->username }}</p>
-                                    </div>
+                                <div class="order-info-item">
+                                    <i class="far fa-calendar-alt order-info-icon"></i>
+                                    <span class="order-info-label">Tanggal:</span>
+                                    <span
+                                        class="order-info-value">{{ \Carbon\Carbon::parse($order->tgl_pesan)->format('d M Y') }}</span>
+                                </div>
 
-                                    <div class="d-flex align-items-center">
-                                        <p class="mb-2">Barang:</p>
-                                        <p class="text-end ms-auto mb-0">{{ $order->barang }}</p>
-                                    </div>
-
-                                    {{-- <div class="d-flex align-items-center">
-                                        <p class="mb-0">Alamat:</p>
-                                        <p class="text-end ms-auto mb-0">{{ $order->alamat }}</p>
-                                    </div> --}}
-
-                                    <div class="d-flex align-items-center">
-                                        <p class="mb-2">Tanggal Service:</p>
-                                        <p class="text-end ms-auto mb-0">{{ $order->tgl_pesan }}</p>
-                                    </div>
-
-                                    {{-- <div class="d-flex align-items-center">
-                                        <p class="mb-0">Masalah Kerusakan:</p>
-                                        <p class="text-end ms-auto mb-0">{{ $order->pesan ?? '-' }}</p>
-                                    </div> --}}
-
-                                    <div class="d-flex align-items-center">
-                                        <p class="mb-2">Jemput Barang:</p>
-                                        <p class="text-end ms-auto mb-0">{{ $order->jemput_barang }}</p>
-                                    </div>
-
+                                <div class="order-info-item">
+                                    <i class="fas fa-truck order-info-icon"></i>
+                                    <span class="order-info-label">Penjemputan:</span>
+                                    <span class="order-info-value">
+                                        {{ $order->jemput_barang == 'yes' ? 'Ya' : 'Tidak' }}
+                                    </span>
                                 </div>
                             </div>
-                        </a>
-                    </div>
-                @endforeach
 
+                            <div class="order-card-footer">
+                                <span class="view-details-text">
+                                    Lihat detail pesanan <i class="fas fa-chevron-right"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                @endforeach
             </div>
         @endif
     </div>
-
 @endsection
