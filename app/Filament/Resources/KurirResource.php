@@ -28,26 +28,19 @@ class KurirResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Nama Kurir')
-                    ->required()
-                    ->maxLength(255),
-
-                Forms\Components\TextInput::make('photo')
-                    ->label('Foto (URL)')
-                    ->nullable()
-                    ->helperText('Masukkan URL atau path relatif foto kurir'),
-
-                Forms\Components\TextInput::make('plat_motor')
-                    ->label('Plat Motor')
-                    ->required()
-                    ->maxLength(255),
-
-                Forms\Components\TextInput::make('merk_motor')
-                    ->label('Merk Motor')
-                    ->required()
-                    ->maxLength(255),
-
+                // Forms\Components\Select::make('order_id')
+                //     ->label('Order')
+                //     ->options(function () {
+                //         // Ambil data dari model Order dan gabungkan 'id', 'username', dan 'tgl_pesan'
+                //         return \App\Models\Order::all()->mapWithKeys(function ($order) {
+                //             // Pastikan tgl_pesan menjadi objek Carbon
+                //             $tglPesanFormatted = \Carbon\Carbon::parse($order->tgl_pesan)->format('Y-m-d');
+                //             return [
+                //                 $order->id => $order->id . ' - ' . $order->username . ' - ' . $tglPesanFormatted
+                //             ];
+                //         });
+                //     })
+                //     ->required(),
                 Forms\Components\Select::make('order_id')
                     ->label('Order')
                     ->options(function () {
@@ -69,7 +62,31 @@ class KurirResource extends Resource
                             return request()->get('order_id');
                         }
                         return null;
-                    }),
+                    })
+                    ->disabled(fn(string $operation): bool => $operation === 'edit') // Nonaktifkan saat edit
+                    ->hidden(fn(string $operation): bool => $operation === 'edit'), // Sembunyikan saat edit
+
+                Forms\Components\TextInput::make('name')
+                    ->label('Nama Kurir')
+                    ->required()
+                    ->maxLength(255),
+
+                Forms\Components\TextInput::make('photo')
+                    ->label('Foto (URL)')
+                    ->nullable()
+                    ->helperText('Masukkan URL atau path relatif foto kurir'),
+
+                Forms\Components\TextInput::make('plat_motor')
+                    ->label('Plat Motor')
+                    ->required()
+                    ->maxLength(255),
+
+                Forms\Components\TextInput::make('merk_motor')
+                    ->label('Merk Motor')
+                    ->required()
+                    ->maxLength(255),
+
+
             ]);
     }
 
@@ -105,7 +122,7 @@ class KurirResource extends Resource
                 // Filter tambahan jika diperlukan
             ])
             ->actions([
-                // Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([

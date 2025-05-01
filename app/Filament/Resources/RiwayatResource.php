@@ -28,19 +28,19 @@ class RiwayatResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('id_random')
-                    ->required()
-                    ->maxLength(7),
-                Forms\Components\TextInput::make('username')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('barang')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('alamat')
-                    ->required(),
-                Forms\Components\DatePicker::make('tgl_pesan')
-                    ->required(),
+                // Forms\Components\TextInput::make('id_random')
+                //     ->required()
+                //     ->maxLength(7),
+                // Forms\Components\TextInput::make('username')
+                //     ->required()
+                //     ->maxLength(255),
+                // Forms\Components\TextInput::make('barang')
+                //     ->required()
+                //     ->maxLength(255),
+                // Forms\Components\Textarea::make('alamat')
+                //     ->required(),
+                // Forms\Components\DatePicker::make('tgl_pesan')
+                //     ->required(),
                 // Forms\Components\Textarea::make('pesan')
                 //     ->required(),
                 // Forms\Components\Select::make('jemput_barang')
@@ -48,10 +48,10 @@ class RiwayatResource extends Resource
                 //         'YES' => 'Ya',
                 //         'NO' => 'Tidak'
                 //     ]),
-                Forms\Components\Select::make('status')
-                    ->label('Status Pesanan')
-                    ->options(Order::getStatuses())
-                    ->required(),
+                // Forms\Components\Select::make('status')
+                //     ->label('Status Pesanan')
+                //     ->options(Order::getStatuses())
+                //     ->required(),
                 // Forms\Components\Select::make('jemput_barang')
                 //     ->label('Jemput Barang')
                 //     ->options([
