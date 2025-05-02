@@ -115,7 +115,7 @@
                     <a class="nav-link magnetic-effect" href="{{ route('isi') }}" data-text="Pesan">
                         <span class="nav-link-inner">
                             <i class="fas fa-tools nav-icon"></i>
-                            <span class="nav-text">Pesan</span>
+                            <span class="nav-text">FormPemesanan</span>
                             <span class="nav-underline"></span>
                         </span>
                     </a>

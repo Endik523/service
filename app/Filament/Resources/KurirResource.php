@@ -51,7 +51,7 @@ class KurirResource extends Resource
                             ->mapWithKeys(function ($order) {
                                 $tglPesanFormatted = \Carbon\Carbon::parse($order->tgl_pesan)->format('Y-m-d');
                                 return [
-                                    $order->id => $order->id . ' - ' . $order->username . ' - ' . $tglPesanFormatted
+                                    $order->id => $order->id_random . ' - ' . $order->username . ' - ' . $tglPesanFormatted
                                 ];
                             });
                     })
