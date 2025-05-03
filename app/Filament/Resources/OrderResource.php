@@ -101,7 +101,14 @@ class OrderResource extends Resource
                 // Filter berdasarkan status
                 Tables\Filters\SelectFilter::make('status')
                     ->options(Order::getStatuses())
-                    ->label('Status Pesanan'),
+                    ->label('Status Pesanan')
+                    // ->default('pending')
+                    ->query(function (Builder $query, array $data) {
+                        // Query filter status di Filament
+                        if (!empty($data['value'])) {
+                            $query->where('status', $data['value']);
+                        }
+                    }),
 
                 Tables\Filters\Filter::make('belum_ada_masalah')
                     ->query(fn(Builder $query): Builder => $query->whereNull('masalah_kerusakan')->orWhere('masalah_kerusakan', ''))

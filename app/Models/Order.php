@@ -33,6 +33,13 @@ class Order extends Model
         ];
     }
 
+
+    // Scope untuk filter status selesai
+    public function scopeSelesai($query)
+    {
+        return $query->where('status', self::STATUS_SELESAI);
+    }
+
     // Menentukan hubungan dengan model Kerusakan
     public function kerusakans()
     {

@@ -2,30 +2,54 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\View\View;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function showOrders(): View
     {
-        // Ambil user_id dari pengguna yang sedang login
-        $userId = Auth::id();
-        // dd($userId);
+        // Initialize empty collection
+        $orders = collect();
 
-        // Pastikan pengguna sudah login
+        // Check if user is authenticated
         if (Auth::check()) {
-            // Ambil hanya orders yang memiliki user_id sesuai dengan ID pengguna yang sedang login
-            $orders = Order::where('user_id', $userId)->with('damageDetails')->get();
-        } else {
-            // Jika tidak ada user yang login, kembalikan koleksi kosong
-            $orders = collect();
+            // Get orders for logged in user with status filtering options
+            $orders = Order::where('user_id', Auth::id())
+                ->with('damageDetails')
+                ->latest() // Order by newest first
+                ->get();
+
+            // If you want to filter by specific status, you can use:
+            // $orders = Order::where('user_id', Auth::id())
+            //     ->completed() // Using the scope we defined
+            //     ->with('damageDetails')
+            //     ->get();
         }
 
-        // Tampilkan view dengan data orders
-        return view('dashboard', ['orders' => $orders]);
+        return view('dashboard', [
+            'orders' => $orders,
+            'statuses' => Order::getStatuses() // Pass statuses to view if needed
+        ]);
+    }
+
+    // Additional method to filter by status
+    public function showOrdersByStatus($status): View
+    {
+        $orders = collect();
+
+        if (Auth::check()) {
+            $orders = Order::where('user_id', Auth::id())
+                ->where('status', $status)
+                ->with('damageDetails')
+                ->get();
+        }
+
+        return view('dashboard', [
+            'orders' => $orders,
+            'currentStatus' => $status,
+            'statuses' => Order::getStatuses()
+        ]);
     }
 }
