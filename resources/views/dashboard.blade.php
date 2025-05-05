@@ -4,7 +4,7 @@
     <div class="order-list-container">
         <div class="order-list-header">
             <h2 class="order-list-title">Daftar Pesanan Anda</h2>
-            <p class="order-list-subtitle">Riwayat semua permintaan service Anda</p>
+            {{-- <p class="order-list-subtitle">Riwayat semua permintaan service Anda</p> --}}
         </div>
 
         @if($orders->isEmpty())

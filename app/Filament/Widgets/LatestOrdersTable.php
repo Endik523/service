@@ -11,6 +11,7 @@ use Filament\Tables\Columns\BadgeColumn;
 class LatestOrdersTable extends TableWidget
 {
     protected int | string | array $columnSpan = 'full';
+    protected static ?string $heading = 'Tabel Orderan';
 
     protected function getTableQuery(): Builder
     {
@@ -31,10 +32,15 @@ class LatestOrdersTable extends TableWidget
                 ->label('Jenis Service'),
 
             BadgeColumn::make('status')
+                ->label('Status')
+                ->formatStateUsing(fn(string $state): string => Order::getStatuses()[$state] ?? $state)
                 ->colors([
-                    'warning' => 'pending',
-                    'primary' => 'processed',
-                    'success' => 'completed',
+                    Order::STATUS_PENDING => 'warning',
+                    Order::STATUS_PENJEMPUTAN => 'info',
+                    Order::STATUS_PEMBAYARAN => 'info',
+                    Order::STATUS_DIPROSES => 'primary',
+                    Order::STATUS_SELESAI => 'success',
+                    Order::STATUS_DIBATALKAN => 'danger',
                 ]),
 
             TextColumn::make('created_at')

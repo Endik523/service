@@ -17,7 +17,8 @@ class Order extends Model
     // Konstanta untuk status
     const STATUS_PENDING = 'Pending';
     const STATUS_PENJEMPUTAN = 'Penjemputan';
-    const STATUS_DIPROSES = 'Sedang Proses';
+    const STATUS_PEMBAYARAN = 'konfirmasi_pembayaran';
+    const STATUS_DIPROSES = 'diproses';
     const STATUS_SELESAI = 'Selesai';
     const STATUS_DIBATALKAN = 'Dibatalkan';
 
@@ -27,6 +28,7 @@ class Order extends Model
         return [
             self::STATUS_PENDING => 'Menunggu Konfirmasi',
             self::STATUS_PENJEMPUTAN => 'Penjemputan Barang',
+            self::STATUS_PEMBAYARAN => 'Konfirmasi Pembayaran',
             self::STATUS_DIPROSES => 'Dalam Perbaikan',
             self::STATUS_SELESAI => 'Selesai',
             self::STATUS_DIBATALKAN => 'Dibatalkan',

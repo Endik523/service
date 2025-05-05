@@ -135,6 +135,7 @@ class RiwayatResource extends Resource
                     ->color(fn(string $state): string => match ($state) {
                         Order::STATUS_PENDING => 'warning',
                         Order::STATUS_PENJEMPUTAN => 'info',
+                        Order::STATUS_PEMBAYARAN => 'info',
                         Order::STATUS_DIPROSES => 'primary',
                         Order::STATUS_SELESAI => 'success',
                         Order::STATUS_DIBATALKAN => 'danger',

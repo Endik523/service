@@ -16,9 +16,19 @@ class StatsOverview extends BaseWidget
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
 
-            Stat::make('Pesanan Proses', Order::where('status', 'processed')->count())
+            // Stat::make('Pesanan Proses', Order::where('status', 'processed')->count())
+            //     ->description('Sedang dikerjakan')
+            //     ->color('warning'),
+
+
+            // Sesuaikan dengan status di OrderResource
+            Stat::make('Pesanan Proses', Order::where('status', Order::STATUS_DIPROSES)->count())
                 ->description('Sedang dikerjakan')
-                ->color('warning'),
+                ->color('primary'), // Warna sesuai dengan yang di OrderResource
+
+            Stat::make('Pesanan Selesai', Order::where('status', Order::STATUS_SELESAI)->count())
+                ->description('Total penyelesaian')
+                ->color('success'),
 
             // Stat::make('Pendapatan', 'Rp ' . number_format(Order::where('status', 'completed')->sum('total_price'), 0, ',', '.'))
             //     ->description('Total pendapatan bersih')

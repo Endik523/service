@@ -73,7 +73,7 @@ class MasalahKerusakanResource extends Resource
                 //     ->sortable()
                 //     ->searchable(),
 
-                TextColumn::make('order_id')
+                TextColumn::make('order.id_random')
                     ->label('ID Order')
                     ->sortable()
                     ->searchable(),
