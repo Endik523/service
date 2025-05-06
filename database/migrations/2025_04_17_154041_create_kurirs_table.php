@@ -20,9 +20,23 @@ class CreateKurirsTable extends Migration
             $table->string('photo')->nullable(); // Foto kurir (URL)
             $table->string('plat_motor'); // Plat motor
             $table->string('merk_motor'); // Merk motor
+            $table->string('phone')->after('merk_motor');
+            $table->string('status')->default('available')->after('phone');
+            $table->point('current_location')->nullable()->after('status');
             $table->foreignId('order_id')->constrained()->onDelete('cascade'); // Relasi dengan tabel orders
             $table->timestamps(); // Kolom created_at dan updated_at
         });
+
+
+        // Schema::create('kurirs', function (Blueprint $table) {
+        //     $table->id(); // Kolom id auto increment
+        //     $table->string('name'); // Nama kurir
+        //     $table->string('photo')->nullable(); // Foto kurir (URL)
+        //     $table->string('plat_motor'); // Plat motor
+        //     $table->string('merk_motor'); // Merk motor
+        //     $table->foreignId('order_id')->constrained()->onDelete('cascade'); // Relasi dengan tabel orders
+        //     $table->timestamps(); // Kolom created_at dan updated_at
+        // });
     }
 
     /**

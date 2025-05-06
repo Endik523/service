@@ -16,16 +16,21 @@ use App\Http\Controllers\KurirController;
 
 
 
+// routes/api.php
+Route::group(['prefix' => 'kurir'], function () {
+    // Get orders for courier
+    Route::get('/orders', [KurirController::class, 'getOrders']);
 
+    // Update order status
+    Route::put('/orders/{id}/status', [KurirController::class, 'updateStatus']);
+
+    // Update courier location
+    Route::put('/location', [KurirController::class, 'updateLocation']);
+});
 
 
 // // Halaman PWA Kurir
 Route::get('/kurir', [KurirController::class, 'index'])->name('kurir.index');
-
-// Route::get('/kurir', function () {
-//     return view('kurir');
-// })->name('kurir');
-
 
 // API untuk PWA
 Route::get('/api/kurir/orders', [KurirController::class, 'apiOrders']);
