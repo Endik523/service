@@ -12,6 +12,26 @@ use App\Http\Controllers\KerusakanController;
 
 
 
+use App\Http\Controllers\KurirController;
+
+
+
+
+
+
+// // Halaman PWA Kurir
+Route::get('/kurir', [KurirController::class, 'index'])->name('kurir.index');
+
+// Route::get('/kurir', function () {
+//     return view('kurir');
+// })->name('kurir');
+
+
+// API untuk PWA
+Route::get('/api/kurir/orders', [KurirController::class, 'apiOrders']);
+Route::post('/api/kurir/confirm-pickup/{orderId}', [KurirController::class, 'confirmPickup']);
+
+
 Route::get('/status', [StatusController::class, 'show'])->name('status');
 Route::get('/download-pdf/{orderId}', [StatusController::class, 'downloadPaymentReceipt'])->name('download.pdf');
 
