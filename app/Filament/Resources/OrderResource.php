@@ -65,9 +65,9 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('username')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('barang')
-                    ->sortable()
-                    ->searchable(),
+                // Tables\Columns\TextColumn::make('barang')
+                //     ->sortable()
+                //     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->formatStateUsing(fn(string $state): string => Order::getStatuses()[$state] ?? $state)
@@ -82,13 +82,13 @@ class OrderResource extends Resource
                     })
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('pesan')
-                    ->sortable()
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('tgl_pesan')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('jemput_barang')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('masalah_kerusakan')
                     ->sortable()
                     ->searchable(),
                 // Tables\Columns\TextColumn::make('created_at')

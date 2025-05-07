@@ -1278,6 +1278,229 @@
             }
         }
     </style>
+
+    <style>
+        .user-profile {
+            position: relative;
+            margin-left: 20px;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+        }
+
+        /* Main toggle button */
+        .user-avatar.dropdown-toggle {
+            display: flex;
+            align-items: center;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 6px 12px 6px 8px;
+            border-radius: 50px;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            outline: none;
+        }
+
+        .user-avatar.dropdown-toggle:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .user-avatar.dropdown-toggle::after {
+            display: inline-block;
+            margin-left: 8px;
+            vertical-align: middle;
+            content: "";
+            border-top: 5px solid;
+            border-right: 5px solid transparent;
+            border-left: 5px solid transparent;
+            color: rgba(255, 255, 255, 0.7);
+            transition: transform 0.2s ease;
+        }
+
+        .user-avatar.dropdown-toggle.show::after {
+            transform: rotate(-180deg);
+        }
+
+        /* Avatar container */
+        .avatar-wrapper {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            margin-right: 10px;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Online status indicator */
+        .status-indicator {
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            width: 12px;
+            height: 12px;
+            background-color: #4ade80;
+            border-radius: 50%;
+            border: 2px solid #1e293b;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Username text */
+        .user-name {
+            color: #05417d;
+            font-weight: 500;
+            font-size: 0.875rem;
+            letter-spacing: 0.2px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Dropdown menu */
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+                0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-radius: 12px;
+            padding: 8px 0;
+            min-width: 200px;
+            background: #ffffff;
+            margin-top: 12px;
+            transform-origin: top right;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .dropdown-menu::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            right: 20px;
+            width: 12px;
+            height: 12px;
+            background: #ffffff;
+            transform: rotate(45deg);
+            box-shadow: -3px -3px 5px rgba(0, 0, 0, 0.02);
+            z-index: -1;
+        }
+
+        /* Menu items */
+        .dropdown-item {
+            padding: 10px 16px;
+            color: #334155;
+            font-weight: 500;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease;
+            position: relative;
+            text-decoration: none;
+        }
+
+        .dropdown-item i {
+            margin-right: 12px;
+            color: #64748b;
+            width: 18px;
+            text-align: center;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background: #f1f5f9;
+            color: #1e40af;
+            transform: translateX(2px);
+        }
+
+        .dropdown-item:hover i {
+            color: #1e40af;
+        }
+
+        /* Divider */
+        .dropdown-divider {
+            margin: 6px 0;
+            border-top: 1px solid #e2e8f0;
+            opacity: 0.5;
+        }
+
+        /* Logout button */
+        .logout-btn {
+            color: #dc2626 !important;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: #fee2e2 !important;
+            color: #b91c1c !important;
+        }
+
+        .logout-btn i {
+            color: #dc2626 !important;
+        }
+
+        /* Ripple effect */
+        .ripple-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .dropdown-item:hover .ripple-effect {
+            opacity: 1;
+        }
+
+        /* Animations */
+        @keyframes fadeInScale {
+            0% {
+                opacity: 0;
+                transform: scale(0.95) translateY(-5px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .dropdown-menu.show {
+            animation: fadeInScale 0.2s ease-out forwards;
+            display: block;
+        }
+
+        /* Focus states for accessibility */
+        .user-avatar.dropdown-toggle:focus-visible {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        .dropdown-item:focus-visible {
+            outline: 2px solid #3b82f6;
+            outline-offset: -2px;
+            background: #f1f5f9;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -1288,11 +1511,17 @@
                 Dashboard Kurir
             </h1>
             <div class="user-profile">
-                <div class="user-info">
-                    <div class="user-name">Muhamad Effendy</div>
-                    <div class="user-role">Kurir</div>
+                <div class="dropdown">
+                    <button class="user-avatar dropdown-toggle" type="button" id="userDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="avatar-wrapper">
+                            {{-- <img src="#" alt="User Avatar" class="avatar-img"> --}}
+                            <span class="status-indicator"></span>
+                        </div>
+                        <span class="user-name">{{ Str::limit(Auth::user()->name, 15) }}</span>
+                    </button>
+
                 </div>
-                <div class="avatar">ME</div>
             </div>
         </header>
 
@@ -1391,6 +1620,8 @@
             </div>
         </div>
     </div>
+
+
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>

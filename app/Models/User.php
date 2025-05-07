@@ -71,4 +71,9 @@ class User extends Authenticatable
     {
         return $this->role === Role::USER;
     }
+
+    public function isKurir(): bool
+    {
+        return $this->role === Role::KURIR;
+    }
 }

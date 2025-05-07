@@ -32,33 +32,56 @@ class LoginController extends Controller
     // }
 
 
+    // public function login(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'email' => 'required|email',
+    //         'password' => 'required',
+    //     ]);
+
+    //     // Attempt login with provided credentials
+    //     if (Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
+    //         $request->session()->regenerate();
+
+    //         // Get the authenticated user
+    //         $user = Auth::user();
+    //         // dd($user);
+
+    //         // Redirect based on role using helper methods
+    //         if ($user->isAdmin()) {
+    //             return redirect('/admin');
+    //         }
+
+    //         return redirect()->route('dashboard');
+    //     }
+
+    //     // If login fails, return with an error message
+    //     return back()->withErrors([
+    //         'email' => 'Email atau password yang Anda masukkan tidak cocok.',
+    //     ]);
+    // }
+
+
+
     public function login(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        // Attempt login with provided credentials
-        if (Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
+        if (Auth::attempt($request->only('email', 'password'))) {
             $request->session()->regenerate();
-
-            // Get the authenticated user
             $user = Auth::user();
-            // dd($user);
 
-            // Redirect based on role using helper methods
-            if ($user->isAdmin()) {
-                return redirect('/admin');
-            }
-
-            return redirect()->route('dashboard');
+            return match ($user->role->value) {
+                'admin' => redirect('/admin'),
+                'kurir' => redirect('/kurir'),
+                default => redirect('/'),
+            };
         }
 
-        // If login fails, return with an error message
-        return back()->withErrors([
-            'email' => 'Email atau password yang Anda masukkan tidak cocok.',
-        ]);
+        return back()->withErrors(['email' => 'Credentials do not match']);
     }
 
 
