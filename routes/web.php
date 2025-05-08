@@ -13,6 +13,25 @@ use App\Http\Controllers\KerusakanController;
 
 
 use App\Http\Controllers\KurirController;
+use App\Http\Controllers\RegisterController;
+
+
+
+
+
+
+
+Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('login', [LoginController::class, 'login']);
+
+
+
+// Route untuk menampilkan form registrasi
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+
+// Route untuk memproses registrasi
+Route::post('/register', [RegisterController::class, 'register']);
+
 
 
 
@@ -42,6 +61,17 @@ Route::get('/download-pdf/{orderId}', [StatusController::class, 'downloadPayment
 
 
 
+Route::get('/isi', function () {
+    return view('isi');
+})->name('isi');
+Route::get('/admin/isi', [IsiController::class, 'form'])->name('admin.isi');
+Route::post('/isi', [IsiController::class, 'store'])->name('isi.store');
+
+
+
+Route::get('/', [DashboardController::class, 'showOrders'])->middleware('auth')->name('dashboard');
+
+
 Route::get('/pembayaran', function () {
     return view('pembayaran');
 })->name('pembayaran');
@@ -49,23 +79,6 @@ Route::get('/pembayaran', function () {
 Route::get('/form', function () {
     return view('form');
 })->name('form');
-
-Route::get('/isi', function () {
-    return view('isi');
-})->name('isi');
-Route::get('/admin/isi', [IsiController::class, 'form'])->name('admin.isi');
-Route::post('/isi', [IsiController::class, 'store'])->name('isi.store');
-
-// Route::get('admin/login', function () {
-//     abort(404);
-// });
-
-Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('login', [LoginController::class, 'login']);
-
-
-Route::get('/', [DashboardController::class, 'showOrders'])->middleware('auth')->name('dashboard');
-
 
 Route::get('/calender', function () {
     return view('backoffice/calender');
