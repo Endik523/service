@@ -35,6 +35,31 @@ class StatusController extends Controller
         ]);
     }
 
+
+    public function updateLocation(Request $request)
+    {
+        // Validasi input dari request
+        $request->validate([
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'courier_id' => 'required|exists:kurirs,id',
+        ]);
+
+        // Cari kurir berdasarkan ID
+        $courier = Kurir::find($request->courier_id);
+
+        // Update lokasi kurir
+        $courier->latitude = $request->latitude;
+        $courier->longitude = $request->longitude;
+        $courier->save();
+
+        // Return response sukses
+        return response()->json([
+            'message' => 'Lokasi kurir berhasil diperbarui!',
+            'data' => $courier
+        ], 200);
+    }
+
     // Method untuk mengunduh PDF
     public function downloadPaymentReceipt($orderId)
     {

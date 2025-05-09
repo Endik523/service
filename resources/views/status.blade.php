@@ -1,6 +1,8 @@
 @extends('layouts.auth')
 
 @section('body')
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <div class="status-container">
         @if (!$order || ($damageDetails->isEmpty() && !$kurir))
             <div class="text-center py-5" style="grid-column: 1/-1">
@@ -240,187 +242,224 @@
                 </div>
             </div>
         </div>
+
     </div>
 
+    <div class="map-container">
+        <div id="courierMap" style="height: 400px;"></div>
+    </div>
+
+    @if($kurir && $order->jemput_barang == 'yes')
+        <div class="map-container">
+            <div id="courierMap" style="height: 400px;"></div>
+        </div>
+
+        <script>
+            // Koordinat awal peta (default jika data tidak ditemukan)
+            const lokasi = [{{ $kurir->latitude ?? -1.258 }}, {{ $kurir->longitude ?? 10.753 }}]; // Lokasi default jika tidak ada data
+
+            // Membuat peta menggunakan Leaflet
+            const map = L.map('courierMap').setView(lokasi, 14);
+
+            // Menambahkan tile OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // Menambahkan marker untuk lokasi awal
+            const marker = L.marker(lokasi).addTo(map);
+            marker.bindPopup("<b>Lokasi Kurir</b>").openPopup();
+
+            // Fungsi untuk mendapatkan lokasi kurir dari server
+            function updateCourierLocation(courierId) {
+                $.ajax({
+                    url: `/api/kurir/location/${courierId}`, // API untuk mendapatkan lokasi kurir
+                    method: 'GET',
+                    success: function (data) {
+                        if (data.latitude && data.longitude) {
+                            const location = [data.latitude, data.longitude];
+                            marker.setLatLng(location); // Update posisi marker
+
+                            // Update peta untuk mengikuti posisi kurir
+                            map.setView(location, 14);
+
+                            // Update estimasi waktu tiba (ETA) dan jarak jika data tersedia
+                            const distance = calculateDistance(location, [{{ $order->latitude ?? -7.2575 }}, {{ $order->longitude ?? 112.7521 }}]); // Lokasi tujuan
+                            $('#distanceText').text(distance.toFixed(1) + " km");
+                            $('#etaTime').text((distance / 0.5).toFixed(0) + " menit"); // Estimasi ETA berdasarkan kecepatan 30 km/jam
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Gagal mendapatkan lokasi kurir', error);
+                    }
+                });
+            }
+
+            // Fungsi untuk menghitung jarak antara dua titik (menggunakan rumus Haversine)
+            function calculateDistance([lat1, lon1], [lat2, lon2]) {
+                const R = 6371; // Radius bumi dalam km
+                const dLat = toRad(lat2 - lat1);
+                const dLon = toRad(lon2 - lon1);
+                const a =
+                    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                const distance = R * c; // Jarak dalam km
+                return distance;
+            }
+
+            // Fungsi untuk mengubah derajat ke radian
+            function toRad(deg) {
+                return deg * (Math.PI / 180);
+            }
+
+            // Perbarui lokasi kurir setiap 10 detik
+            const courierId = {{ $kurir->id }}; // ID kurir
+            setInterval(function () {
+                updateCourierLocation(courierId);
+            }, 10000); // Update setiap 10 detik
+        </script>
+    @endif
+
+    <script>
+        // Function to open image modal
+        function openModal(imageSrc) {
+            $('#modalImage').attr('src', imageSrc);
+            $('#imageModal').modal('show');
+        }
+
+        // Function to confirm order cancellation
+        function confirmCancel() {
+            Swal.fire({
+                title: 'Batalkan Pesanan?',
+                text: "Anda yakin ingin membatalkan pesanan ini?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Batalkan!',
+                cancelButtonText: 'Tidak'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    cancelOrder();
+                }
+            });
+        }
+
+        // Function to cancel order
+        function cancelOrder() {
+            // Show loading state
+            $('#orderStatus').html(`
+                                            <div class="text-center py-4">
+                                                <div class="spinner-border text-danger" role="status">
+                                                    <span class="sr-only">Loading...</span>
+                                                </div>
+                                                <p class="mt-2">Memproses pembatalan...</p>
+                                            </div>
+                                        `);
+
+            // Simulate API call
+            setTimeout(() => {
+                // Hide all sections
+                $('.status-card, .action-section').fadeOut();
+
+                // Show cancellation message
+                $('#orderStatus').html(`
+                                                <div class="alert alert-danger text-center py-4">
+                                                    <h4><i class="fas fa-ban mr-2"></i>Pesanan Telah Dibatalkan</h4>
+                                                    <p class="mb-0">ID Pesanan: {{ $order->id_random ?? $detail->id_order ?? 'N/A' }}</p>
+                                                </div>
+                                            `);
+
+                // Update status badge
+                $('.badge')
+                    .removeClass('processing')
+                    .addClass('completed')
+                    .html('<i class="fas fa-times-circle mr-2"></i>Dibatalkan');
+            }, 1500);
+        }
+
+        // Function to continue to payment
+        function continuePayment() {
+            $('.loading-spinner').show();
+            $('.btn-pay').prop('disabled', true);
+
+            // Simulate processing
+            setTimeout(() => {
+                window.location.href = "https://mitrans.com/payment";
+            }, 1000);
+        }
+    </script>
+
+    {{--
+    <script>
+        // Koordinat awal peta (default jika data tidak ditemukan)
+        // const lokasi = [-1.258, 10.753];
+        const lokasi = [{{ $kurir-> latitude ?? -1.258 }}, { { $kurir -> longitude ?? 10.753 } }]; // Lokasi default jika tidak ada data
+
+        // Membuat peta menggunakan Leaflet
+        const map = L.map('courierMap').setView(lokasi, 14);
+
+        // Menambahkan tile OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Menambahkan marker untuk lokasi awal
+        const marker = L.marker(lokasi).addTo(map);
+        marker.bindPopup("<b>Lokasi Kurir</b>").openPopup();
+
+        // Fungsi untuk mendapatkan lokasi kurir dari server
+        function updateCourierLocation(courierId) {
+            $.ajax({
+                url: `/api/kurir/location/${courierId}`, // API untuk mendapatkan lokasi kurir
+                method: 'GET',
+                success: function (data) {
+                    if (data.latitude && data.longitude) {
+                        const location = [data.latitude, data.longitude];
+                        marker.setLatLng(location); // Update posisi marker
+
+                        // Update peta untuk mengikuti posisi kurir
+                        map.setView(location, 14);
+
+                        // Update estimasi waktu tiba (ETA) dan jarak jika data tersedia
+                        const distance = calculateDistance(location, [{{ $order-> latitude ?? -7.2575 }
+                }, {{ $order-> longitude ?? 112.7521 }}]); // Lokasi tujuan
+        $('#distanceText').text(distance.toFixed(1) + " km");
+        $('#etaTime').text((distance / 0.5).toFixed(0) + " menit"); // Estimasi ETA berdasarkan kecepatan 30 km/jam
+                        }
+                    },
+        error: function (error) {
+            console.error('Gagal mendapatkan lokasi kurir', error);
+        }
+                });
+            }
+
+        // Fungsi untuk menghitung jarak antara dua titik (menggunakan rumus Haversine)
+        function calculateDistance([lat1, lon1], [lat2, lon2]) {
+            const R = 6371; // Radius bumi dalam km
+            const dLat = toRad(lat2 - lat1);
+            const dLon = toRad(lon2 - lon1);
+            const a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            const distance = R * c; // Jarak dalam km
+            return distance;
+        }
+
+        // Fungsi untuk mengubah derajat ke radian
+        function toRad(deg) {
+            return deg * (Math.PI / 180);
+        }
+
+        // Perbarui lokasi kurir setiap 10 detik
+        const courierId = {{ $kurir-> id }}; // ID kurir
+        setInterval(function () {
+            updateCourierLocation(courierId);
+        }, 10000); // Update setiap 10 detik
+    </script> --}}
 
 @endsection
-
-<script>
-    // Function to open image modal
-    function openModal(imageSrc) {
-        $('#modalImage').attr('src', imageSrc);
-        $('#imageModal').modal('show');
-    }
-
-    // Function to confirm order cancellation
-    function confirmCancel() {
-        Swal.fire({
-            title: 'Batalkan Pesanan?',
-            text: "Anda yakin ingin membatalkan pesanan ini?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Ya, Batalkan!',
-            cancelButtonText: 'Tidak'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                cancelOrder();
-            }
-        });
-    }
-
-    // Function to cancel order
-    function cancelOrder() {
-        // Show loading state
-        $('#orderStatus').html(`
-                <div class="text-center py-4">
-                    <div class="spinner-border text-danger" role="status">
-                        <span class="sr-only">Loading...</span>
-                    </div>
-                    <p class="mt-2">Memproses pembatalan...</p>
-                </div>
-            `);
-
-        // Simulate API call
-        setTimeout(() => {
-            // Hide all sections
-            $('.status-card, .action-section').fadeOut();
-
-            // Show cancellation message
-            $('#orderStatus').html(`
-                    <div class="alert alert-danger text-center py-4">
-                        <h4><i class="fas fa-ban mr-2"></i>Pesanan Telah Dibatalkan</h4>
-                        <p class="mb-0">ID Pesanan: {{ $order->id_random ?? $detail->id_order ?? 'N/A' }}</p>
-                    </div>
-                `);
-
-            // Update status badge
-            $('.badge')
-                .removeClass('processing')
-                .addClass('completed')
-                .html('<i class="fas fa-times-circle mr-2"></i>Dibatalkan');
-        }, 1500);
-    }
-
-    // Function to continue to payment
-    function continuePayment() {
-        $('.loading-spinner').show();
-        $('.btn-pay').prop('disabled', true);
-
-        // Simulate processing
-        setTimeout(() => {
-            window.location.href = "https://mitrans.com/payment";
-        }, 1000);
-    }
-
-    // Initialize map when document is ready
-    $(document).ready(function () {
-        initMap();
-        $('[data-toggle="tooltip"]').tooltip();
-    });
-
-    function initMap() {
-        // Koordinat tengah Surabaya (-7.2575, 112.7521)
-        const surabayaCenter = [-7.2575, 112.7521];
-
-        // Inisialisasi peta dengan view Surabaya
-        const map = L.map('courierMap').setView(surabayaCenter, 13);
-
-        // Batasi viewport hanya untuk wilayah Surabaya
-        const surabayaBounds = L.latLngBounds(
-            L.latLng(-7.35, 112.45), // Barat Laut
-            L.latLng(-7.10, 112.90)  // Tenggara
-        );
-
-        // Set batas maksimal viewport
-        map.setMaxBounds(surabayaBounds);
-
-        // Tambahkan tile layer (peta dasar)
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            maxZoom: 18,
-            minZoom: 11  // Zoom minimal agar tidak terlalu jauh
-        }).addTo(map);
-
-        // Tambahkan marker untuk lokasi user (contoh: Mall Tunjungan Plaza)
-        const userLocation = [-7.2596, 112.7378];
-        const userMarker = L.marker(userLocation, {
-            icon: L.divIcon({
-                html: '<i class="fas fa-map-marker-alt fa-2x" style="color: #3490dc;"></i>',
-                iconSize: [30, 30],
-                className: 'my-html-icon'
-            })
-        }).addTo(map).bindPopup("<b>Lokasi Anda</b><br>Mall Tunjungan Plaza");
-
-        // Simulasi rute kurir dari Barat Surabaya ke lokasi user
-        const courierPath = [
-            [-7.2750, 112.7460], // Barat Surabaya (contoh: daerah Keputih)
-            [-7.2700, 112.7480], // Bergerak ke timur
-            [-7.2675, 112.7520], // Dekat Jembatan Suramadu
-            [-7.2596, 112.7378]  // Tujuan akhir (Tunjungan Plaza)
-        ];
-
-        // Tambahkan marker kurir
-        const courierMarker = L.marker(courierPath[0], {
-            icon: L.divIcon({
-                html: '<i class="fas fa-motorcycle fa-2x" style="color: #e74c3c;"></i>',
-                iconSize: [30, 30],
-                className: 'my-html-icon'
-            })
-        }).addTo(map).bindPopup("<b>Kurir Anda</b>");
-
-        // Gambar garis rute
-        const routeLine = L.polyline(courierPath, {
-            color: '#e74c3c',
-            weight: 5,
-            dashArray: '10, 10',
-            opacity: 0.7
-        }).addTo(map);
-
-        // Animasi pergerakan kurir
-        let currentPoint = 0;
-        const moveInterval = setInterval(() => {
-            if (currentPoint < courierPath.length - 1) {
-                currentPoint++;
-                courierMarker.setLatLng(courierPath[currentPoint]);
-
-                // Update ETA
-                const remainingPoints = courierPath.length - currentPoint - 1;
-                const etaMinutes = remainingPoints * 3;
-                $('#etaTime').text(etaMinutes + " menit");
-
-                // Update jarak
-                const remainingDistance = (remainingPoints * 1.5).toFixed(1);
-                $('#distanceText').text(remainingDistance + " km");
-
-                if (remainingPoints < 2) {
-                    $('#routeType').text("Hampir Sampai");
-                }
-            } else {
-                clearInterval(moveInterval);
-                $('#etaTime').text("Sudah Sampai");
-                $('#distanceText').text("0 km");
-                $('.step.active').next().addClass('completed').removeClass('active');
-                $('.step.active').removeClass('active');
-            }
-        }, 3000);
-
-        // Fit bounds untuk menampilkan seluruh rute
-        map.fitBounds(routeLine.getBounds());
-
-        // Tambahkan kontrol zoom
-        L.control.zoom({
-            position: 'topright'
-        }).addTo(map);
-
-        // Tambahkan tombol lokasi
-        L.control.locate({
-            position: 'topright',
-            strings: {
-                title: "Tunjukkan lokasi saya"
-            }
-        }).addTo(map);
-    }
-
-</script>

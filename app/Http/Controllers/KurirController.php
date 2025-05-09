@@ -36,6 +36,8 @@ class KurirController extends Controller
         return response()->json(['message' => 'Penjemputan dikonfirmasi!']);
     }
 
+
+
     // public function confirmPickup(Request $request, $orderId)
     // {
     //     $order = Order::findOrFail($orderId);
@@ -100,21 +102,31 @@ class KurirController extends Controller
     }
 
 
-    // public function updateLocation(Request $request)
-    // {
-    //     $request->validate([
-    //         'latitude' => 'required|numeric',
-    //         'longitude' => 'required|numeric'
-    //     ]);
+    // app/Http/Controllers/CourierController.php
 
-    //     $kurir = Kurir::where('user_id', auth()->id())->firstOrFail();
+    public function updateLocation(Request $request)
+    {
+        // Validasi input dari request
+        $request->validate([
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'courier_id' => 'required|exists:kurirs,id',
+        ]);
 
-    //     $kurir->update([
-    //         'current_location' => DB::raw("POINT({$request->longitude}, {$request->latitude})")
-    //     ]);
+        // Cari kurir berdasarkan ID
+        $courier = Kurir::find($request->courier_id);
 
-    //     return response()->json(['message' => 'Location updated']);
-    // }
+        // Update lokasi kurir
+        $courier->latitude = $request->latitude;
+        $courier->longitude = $request->longitude;
+        $courier->save();
+
+        // Return response sukses
+        return response()->json([
+            'message' => 'Lokasi kurir berhasil diperbarui!',
+            'data' => $courier
+        ], 200);
+    }
 
 
     public function updateStatus($id, Request $request)

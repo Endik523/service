@@ -51,6 +51,9 @@ Route::group(['prefix' => 'kurir'], function () {
 // // Halaman PWA Kurir
 Route::get('/kurir', [KurirController::class, 'index'])->name('kurir.index');
 
+Route::put('/kurir/update-location', [KurirController::class, 'updateLocation']);
+Route::get('/kurir/location/{id}', [KurirController::class, 'getLocation']);
+
 // API untuk PWA
 Route::get('/api/kurir/orders', [KurirController::class, 'apiOrders']);
 Route::post('/api/kurir/confirm-pickup/{orderId}', [KurirController::class, 'confirmPickup']);
