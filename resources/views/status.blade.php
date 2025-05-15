@@ -3,6 +3,9 @@
 @section('body')
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <div class="status-container">
         @if (!$order || ($damageDetails->isEmpty() && !$kurir))
             <div class="text-center py-5" style="grid-column: 1/-1">
@@ -199,12 +202,11 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-center mt-4">
-                        <button type="button" class="btn btn-cancel btn-action" onclick="confirmCancel()">
-                            <i class="fas fa-times mr-2"></i>Batalkan Pesanan
+                        <button type="button" class="btn  btn-action" onclick="confirmCancel()">
+                            <i class="fas fa-times me-2 "></i>Batalkan Pesanan
                         </button>
-                        <button type="button" class="btn btn-pay btn-action" onclick="continuePayment()">
-                            <i class="fas fa-credit-card mr-2"></i>Bayar Sekarang
-                            <span class="loading-spinner spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <button type="button" class="btn btn-primary btn-action" onclick="continuePayment({{ $order->id }})">
+                            <i class="fas fa-credit-card me-2"></i>Bayar Sekarang
                         </button>
                     </div>
                     @if($totalBiaya > 0)
@@ -320,8 +322,16 @@
                 updateCourierLocation(courierId);
             }, 10000); // Update setiap 10 detik
         </script>
+
+    @else
+        <div class="right-column" style="width: 100%;">
+            {{-- Detail Kerusakan --}}
+            {{-- Rincian Biaya --}}
+        </div>
     @endif
 
+    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key="SB-Mid-client-jM-DA1x_pvsOaj2c"></script>
     <script>
         // Function to open image modal
         function openModal(imageSrc) {
@@ -351,13 +361,13 @@
         function cancelOrder() {
             // Show loading state
             $('#orderStatus').html(`
-                                            <div class="text-center py-4">
-                                                <div class="spinner-border text-danger" role="status">
-                                                    <span class="sr-only">Loading...</span>
-                                                </div>
-                                                <p class="mt-2">Memproses pembatalan...</p>
-                                            </div>
-                                        `);
+                                                                                                                                                    <div class="text-center py-4">
+                                                                                                                                                        <div class="spinner-border text-danger" role="status">
+                                                                                                                                                            <span class="sr-only">Loading...</span>
+                                                                                                                                                        </div>
+                                                                                                                                                        <p class="mt-2">Memproses pembatalan...</p>
+                                                                                                                                                    </div>
+                                                                                                                                                `);
 
             // Simulate API call
             setTimeout(() => {
@@ -366,11 +376,11 @@
 
                 // Show cancellation message
                 $('#orderStatus').html(`
-                                                <div class="alert alert-danger text-center py-4">
-                                                    <h4><i class="fas fa-ban mr-2"></i>Pesanan Telah Dibatalkan</h4>
-                                                    <p class="mb-0">ID Pesanan: {{ $order->id_random ?? $detail->id_order ?? 'N/A' }}</p>
-                                                </div>
-                                            `);
+                                                                                                                                                        <div class="alert alert-danger text-center py-4">
+                                                                                                                                                            <h4><i class="fas fa-ban mr-2"></i>Pesanan Telah Dibatalkan</h4>
+                                                                                                                                                            <p class="mb-0">ID Pesanan: {{ $order->id_random ?? $detail->id_order ?? 'N/A' }}</p>
+                                                                                                                                                        </div>
+                                                                                                                                                    `);
 
                 // Update status badge
                 $('.badge')
@@ -380,16 +390,46 @@
             }, 1500);
         }
 
-        // Function to continue to payment
-        function continuePayment() {
+
+        function continuePayment(orderId) {
             $('.loading-spinner').show();
             $('.btn-pay').prop('disabled', true);
 
-            // Simulate processing
-            setTimeout(() => {
-                window.location.href = "https://mitrans.com/payment";
-            }, 1000);
+            // Simulasi pengiriman ID ke server untuk memproses pembayaran
+            $.ajax({
+                url: '/process-payment', // URL endpoint untuk memproses pembayaran
+                method: 'POST',
+                data: {
+                    order_id: orderId, // Kirim ID pesanan
+                    _token: '{{ csrf_token() }}' // Pastikan untuk mengirimkan token CSRF jika menggunakan Laravel
+                },
+                success: function (response) {
+                    console.log(response);
+                    // Handle sukses pembayaran
+                    if (response.success) {
+                        snap.pay(response.payment_url);
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Pembayaran Gagal',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Terjadi Kesalahan',
+                        text: 'Gagal memproses pembayaran. Silakan coba lagi.'
+                    });
+                },
+                complete: function () {
+                    $('.loading-spinner').hide();
+                    $('.btn-pay').prop('disabled', false);
+                }
+            });
         }
+
     </script>
 
     {{--
@@ -428,13 +468,13 @@
                 }, {{ $order-> longitude ?? 112.7521 }}]); // Lokasi tujuan
         $('#distanceText').text(distance.toFixed(1) + " km");
         $('#etaTime').text((distance / 0.5).toFixed(0) + " menit"); // Estimasi ETA berdasarkan kecepatan 30 km/jam
-                        }
-                    },
+                                                                                                                                }
+                                                                                                                            },
         error: function (error) {
             console.error('Gagal mendapatkan lokasi kurir', error);
         }
-                });
-            }
+                                                                                                                        });
+                                                                                                                    }
 
         // Fungsi untuk menghitung jarak antara dua titik (menggunakan rumus Haversine)
         function calculateDistance([lat1, lon1], [lat2, lon2]) {

@@ -7,6 +7,10 @@ use App\Models\Kurir;
 use App\Models\Order;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Illuminate\Http\Request;
+use Midtrans\Snap;
+use Midtrans\Config;
+
+
 
 class StatusController extends Controller
 {
@@ -73,5 +77,53 @@ class StatusController extends Controller
 
         // Mengunduh PDF dengan nama file berdasarkan order ID
         return $pdf->download('catatan_pembayaran_' . $orderId . '.pdf');
+    }
+
+    public function processPayment(Request $request)
+    {
+        $orderId = $request->input('order_id');
+
+        // Validasi apakah order ID valid
+        $order = Order::find($orderId);
+
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pesanan tidak ditemukan.'
+            ]);
+        }
+
+        $totalBiaya = DamageDetails::where('order_id', $orderId)
+            ->sum('harga_barang');
+
+        // Konfigurasi Midtrans
+        Config::$serverKey = 'SB-Mid-server-rIrdxjEO9iNeEZPs4a3pviZB';
+        Config::$isProduction = false;
+        Config::$isSanitized = true;
+        Config::$is3ds = true;
+
+        // Parameter transaksi
+        $params = [
+            'transaction_details' => [
+                'order_id' => $order->id_random, // ID Pesanan Random yang ditampilkan di halaman status
+                'gross_amount' => $totalBiaya, // Misalnya ada kolom total biaya di model Order
+            ],
+            // Anda bisa menambahkan parameter lain yang diperlukan oleh Midtrans
+        ];
+
+        // Mendapatkan token Snap Midtrans
+        try {
+            $snapToken = Snap::getSnapToken($params);
+
+            return response()->json([
+                'success' => true,
+                'payment_url' => $snapToken, // Atau URL yang sesuai dengan API Midtrans
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'gagal'
+            ]);
+        }
     }
 }

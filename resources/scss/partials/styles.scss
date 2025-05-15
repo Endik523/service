@@ -1256,3 +1256,17 @@ $transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 .leaflet-bar a:hover {
     background-color: #f8f9fa;
 }
+
+.single-column {
+    display: block;
+}
+
+.single-column .left-column,
+.single-column .right-column {
+    width: 100%;
+    grid-column: 1 / -1;
+}
+
+.full-width {
+    width: 100%;
+}

@@ -63,6 +63,8 @@ Route::get('/status', [StatusController::class, 'show'])->name('status');
 Route::get('/download-pdf/{orderId}', [StatusController::class, 'downloadPaymentReceipt'])->name('download.pdf');
 
 
+Route::post('/process-payment', [StatusController::class, 'processPayment']);
+
 
 Route::get('/isi', function () {
     return view('isi');
