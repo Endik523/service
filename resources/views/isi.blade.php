@@ -131,21 +131,6 @@
                             </div>
                         </div>
 
-                        <!-- Photo Upload -->
-                        <div class="col-12 mb-4">
-                            <label class="form-label fw-semibold">
-                                <i class="fas fa-camera me-2 text-primary"></i>Foto Kerusakan (Opsional)
-                            </label>
-                            <div class="dropzone border rounded-2 p-3 text-center" id="photoDropzone">
-                                <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
-                                <p class="mb-1">Seret & lepas foto disini atau klik untuk memilih</p>
-                                <small class="text-muted">Format: JPG/PNG (Maks. 2MB per foto)</small>
-                                <input type="file" id="damagePhotos" name="damagePhotos[]" multiple class="d-none"
-                                    accept="image/*">
-                            </div>
-                            <div id="previewContainer" class="mt-2 d-flex flex-wrap gap-2"></div>
-                        </div>
-
                         <!-- Submit Button -->
                         <div class="col-12 text-center">
                             <button type="submit" class="btn btn-primary btn-lg px-4 py-2">
@@ -360,86 +345,6 @@
         });
     </script>
 @endsection
-
-
-
-{{--
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const contactForm = document.getElementById('contactForm');
-        const successMessage = document.getElementById('successMessage');
-        const whatsappButton = document.getElementById('whatsappButton');
-
-        contactForm.addEventListener('submit', function (event) {
-            event.preventDefault();
-
-            // Validasi form sebelum submit
-            if (!contactForm.checkValidity()) {
-                event.stopPropagation();
-                contactForm.classList.add('was-validated');
-                return;
-            }
-
-            // Ambil semua nilai form dengan benar
-            const formValues = {
-                username: document.getElementById('username').value,
-                no_telp: document.getElementById('no_telp').value,
-                // damage_photos: document.getElementById('damage_photos').value,
-                barang: document.getElementById('barang').value,
-                alamat: document.getElementById('alamat').value || '-', // default jika kosong
-                tgl_pesan: document.getElementById('tgl_pesan').value,
-                jemput_barang: document.getElementById('jemput_barang').value,
-                pesan: document.getElementById('pesan').value,
-                user_id: {{ auth() -> id() ?? 'null'
-        }} // Pastikan user sudah login
-        };
-
-
-    // Kirim data via Fetch API
-    const formData = new FormData(contactForm);
-
-    fetch(contactForm.action, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        }
-    })
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.json();
-        })
-        .then(data => {
-            contactForm.style.display = 'none';
-            successMessage.style.display = 'block';
-
-            // Buat pesan WhatsApp
-            const whatsappUrl = `https://wa.me/6285755060739?text=${encodeURIComponent(`Hai Admin.
-                                            Nama Saya : *${formValues.username}*
-                                            Nomor Saya : *${formValues.no_telp}*
-                                            Barang Saya : *${formValues.barang}*
-                                            Alamat Saya : *${formValues.alamat}*
-                                            Tanggal Service : *${formValues.tgl_pesan}*
-
-                                            Jemput Barang Di Rumah:
-                                            *${formValues.jemput_barang}*
-
-                                            *Keluhan*:
-                                            ${formValues.pesan}`)
-                }`;
-
-            whatsappButton.onclick = () => window.open(whatsappUrl, '_blank');
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan: ' + error.message);
-        });
-        });
-    });
-</script> --}}
-
-
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {

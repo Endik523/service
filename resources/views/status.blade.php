@@ -23,52 +23,7 @@
                 <p class="text-muted">ID Pesanan: <strong>{{ $order->id_random ?? $detail->id_order ?? 'N/A' }}</strong></p>
             </div>
 
-            <!-- Tracking Card (Full Width) -->
-            @if ($kurir)
-                <div class="status-card tracking-card">
-                    <h3><i class="fas fa-map-marked-alt mr-2"></i>Pelacakan Kurir</h3>
 
-                    <div class="map-container">
-                        <div id="courierMap"></div>
-                        <div class="map-overlay">
-                            <div class="eta-display">
-                                <span class="eta-label">Perkiraan Tiba</span>
-                                <div id="etaTime">15-20 menit</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-info">
-                        <div class="tracking-item">
-                            <i class="fas fa-road"></i>
-                            <div class="tracking-value" id="distanceText">4.2 km</div>
-                            <div class="tracking-label">Jarak Tempuh</div>
-                        </div>
-                        <div class="tracking-item">
-                            <i class="fas fa-clock"></i>
-                            <div class="tracking-value" id="durationText">~15 menit</div>
-                            <div class="tracking-label">Waktu Tempuh</div>
-                        </div>
-                        <div class="tracking-item">
-                            <i class="fas fa-route"></i>
-                            <div class="tracking-value" id="routeType">Rute Tercepat</div>
-                            <div class="tracking-label">Jenis Rute</div>
-                        </div>
-                    </div>
-
-                    <div class="action-buttons">
-                        {{-- <button id="alternateRoute" class="btn btn-outline-primary">
-                            <i class="fas fa-route mr-1"></i>Rute Alternatif
-                        </button> --}}
-                        <button class="btn btn-outline-success">
-                            <i class="fas fa-phone mr-1"></i>Hubungi Kurir
-                        </button>
-                        <button class="btn btn-outline-info">
-                            <i class="fas fa-share-alt mr-1"></i>Bagikan Lokasi
-                        </button>
-                    </div>
-                </div>
-            @endif
 
             <!-- Left Column -->
             <div class="left-column">
@@ -103,49 +58,10 @@
                                     <i class="fas fa-motorcycle"></i>
                                     <span>{{ $kurir->merk_motor }} ({{ $kurir->plat_motor }})</span>
                                 </div>
-
-                                <div class="courier-contact">
-                                    <i class="fas fa-phone">NO Hp</i>
-                                    <a href="tel:{{ $kurir->phone }}">{{ $kurir->phone }}</a>
-                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Timeline -->
-                    <div class="status-timeline">
-                        <h4><i class="fas fa-clipboard-list mr-2"></i>Status Pengantaran</h4>
-                        <div class="steps">
-                            <div class="step completed">
-                                <i class="fas fa-check-circle"></i>
-                                <div class="step-content">
-                                    <span>Pesanan Diterima</span>
-                                    <small>10:00 WIB</small>
-                                </div>
-                            </div>
-                            <div class="step completed">
-                                <i class="fas fa-check-circle"></i>
-                                <div class="step-content">
-                                    <span>Kurir Menuju Lokasi</span>
-                                    <small>10:15 WIB</small>
-                                </div>
-                            </div>
-                            <div class="step active">
-                                <i class="fas fa-motorcycle"></i>
-                                <div class="step-content">
-                                    <span>Dalam Perjalanan</span>
-                                    <small>Estimasi 15-20 menit</small>
-                                </div>
-                            </div>
-                            <div class="step">
-                                <i class="far fa-clock"></i>
-                                <div class="step-content">
-                                    <span>Sampai di Tujuan</span>
-                                    <small>-</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 @endif
             </div>
 
@@ -217,118 +133,13 @@
                                     <i class="fas fa-file-pdf mr-2"></i>Download Invoice
                                 </a>
                             </div>
-
-
                         </div>
                     @endif
                 @endif
             </div>
-
-            <!-- Action Buttons (Full Width) -->
-
-
-            <!-- Status Message Area -->
-            <div id="orderStatus" class="mt-4" style="grid-column: 1/-1"></div>
         @endif
     </div>
 
-    <!-- Image Modal -->
-    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-body text-center">
-                    <img id="modalImage" src="" style="max-width: 100%; max-height: 80vh;">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="map-container">
-        <div id="courierMap" style="height: 400px;"></div>
-    </div>
-
-    @if($kurir && $order->jemput_barang == 'yes')
-        <div class="map-container">
-            <div id="courierMap" style="height: 400px;"></div>
-        </div>
-
-        <script>
-            // Koordinat awal peta (default jika data tidak ditemukan)
-            const lokasi = [{{ $kurir->latitude ?? -1.258 }}, {{ $kurir->longitude ?? 10.753 }}]; // Lokasi default jika tidak ada data
-
-            // Membuat peta menggunakan Leaflet
-            const map = L.map('courierMap').setView(lokasi, 14);
-
-            // Menambahkan tile OpenStreetMap
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
-
-            // Menambahkan marker untuk lokasi awal
-            const marker = L.marker(lokasi).addTo(map);
-            marker.bindPopup("<b>Lokasi Kurir</b>").openPopup();
-
-            // Fungsi untuk mendapatkan lokasi kurir dari server
-            function updateCourierLocation(courierId) {
-                $.ajax({
-                    url: `/api/kurir/location/${courierId}`, // API untuk mendapatkan lokasi kurir
-                    method: 'GET',
-                    success: function (data) {
-                        if (data.latitude && data.longitude) {
-                            const location = [data.latitude, data.longitude];
-                            marker.setLatLng(location); // Update posisi marker
-
-                            // Update peta untuk mengikuti posisi kurir
-                            map.setView(location, 14);
-
-                            // Update estimasi waktu tiba (ETA) dan jarak jika data tersedia
-                            const distance = calculateDistance(location, [{{ $order->latitude ?? -7.2575 }}, {{ $order->longitude ?? 112.7521 }}]); // Lokasi tujuan
-                            $('#distanceText').text(distance.toFixed(1) + " km");
-                            $('#etaTime').text((distance / 0.5).toFixed(0) + " menit"); // Estimasi ETA berdasarkan kecepatan 30 km/jam
-                        }
-                    },
-                    error: function (error) {
-                        console.error('Gagal mendapatkan lokasi kurir', error);
-                    }
-                });
-            }
-
-            // Fungsi untuk menghitung jarak antara dua titik (menggunakan rumus Haversine)
-            function calculateDistance([lat1, lon1], [lat2, lon2]) {
-                const R = 6371; // Radius bumi dalam km
-                const dLat = toRad(lat2 - lat1);
-                const dLon = toRad(lon2 - lon1);
-                const a =
-                    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                const distance = R * c; // Jarak dalam km
-                return distance;
-            }
-
-            // Fungsi untuk mengubah derajat ke radian
-            function toRad(deg) {
-                return deg * (Math.PI / 180);
-            }
-
-            // Perbarui lokasi kurir setiap 10 detik
-            const courierId = {{ $kurir->id }}; // ID kurir
-            setInterval(function () {
-                updateCourierLocation(courierId);
-            }, 10000); // Update setiap 10 detik
-        </script>
-
-    @else
-        <div class="right-column" style="width: 100%;">
-            {{-- Detail Kerusakan --}}
-            {{-- Rincian Biaya --}}
-        </div>
-    @endif
 
     <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
         data-client-key="SB-Mid-client-jM-DA1x_pvsOaj2c"></script>
@@ -359,30 +170,33 @@
 
         // Function to cancel order
         function cancelOrder() {
-            // Show loading state
-            $('#orderStatus').html(`
-                                                                                                                                                    <div class="text-center py-4">
-                                                                                                                                                        <div class="spinner-border text-danger" role="status">
-                                                                                                                                                            <span class="sr-only">Loading...</span>
-                                                                                                                                                        </div>
-                                                                                                                                                        <p class="mt-2">Memproses pembatalan...</p>
-                                                                                                                                                    </div>
-                                                                                                                                                `);
+            // Sembunyikan tombol saat pembatalan dimulai
+            $('.btn-action').hide();
 
-            // Simulate API call
+            // Tampilkan loading
+            $('#orderStatus').html(`
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-danger" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                        <p class="mt-2">Memproses pembatalan...</p>
+                    </div>
+                `);
+
+            // Simulasi pembatalan
             setTimeout(() => {
-                // Hide all sections
+                // Sembunyikan semua kartu status
                 $('.status-card, .action-section').fadeOut();
 
-                // Show cancellation message
+                // Tampilkan pesan dibatalkan
                 $('#orderStatus').html(`
-                                                                                                                                                        <div class="alert alert-danger text-center py-4">
-                                                                                                                                                            <h4><i class="fas fa-ban mr-2"></i>Pesanan Telah Dibatalkan</h4>
-                                                                                                                                                            <p class="mb-0">ID Pesanan: {{ $order->id_random ?? $detail->id_order ?? 'N/A' }}</p>
-                                                                                                                                                        </div>
-                                                                                                                                                    `);
+                        <div class="alert alert-danger text-center py-4">
+                            <h4><i class="fas fa-ban mr-2"></i>Pesanan Telah Dibatalkan</h4>
+                            <p class="mb-0">ID Pesanan: {{ $order->id_random ?? $detail->id_order ?? 'N/A' }}</p>
+                        </div>
+                    `);
 
-                // Update status badge
+                // Update badge status
                 $('.badge')
                     .removeClass('processing')
                     .addClass('completed')
@@ -431,75 +245,4 @@
         }
 
     </script>
-
-    {{--
-    <script>
-        // Koordinat awal peta (default jika data tidak ditemukan)
-        // const lokasi = [-1.258, 10.753];
-        const lokasi = [{{ $kurir-> latitude ?? -1.258 }}, { { $kurir -> longitude ?? 10.753 } }]; // Lokasi default jika tidak ada data
-
-        // Membuat peta menggunakan Leaflet
-        const map = L.map('courierMap').setView(lokasi, 14);
-
-        // Menambahkan tile OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        // Menambahkan marker untuk lokasi awal
-        const marker = L.marker(lokasi).addTo(map);
-        marker.bindPopup("<b>Lokasi Kurir</b>").openPopup();
-
-        // Fungsi untuk mendapatkan lokasi kurir dari server
-        function updateCourierLocation(courierId) {
-            $.ajax({
-                url: `/api/kurir/location/${courierId}`, // API untuk mendapatkan lokasi kurir
-                method: 'GET',
-                success: function (data) {
-                    if (data.latitude && data.longitude) {
-                        const location = [data.latitude, data.longitude];
-                        marker.setLatLng(location); // Update posisi marker
-
-                        // Update peta untuk mengikuti posisi kurir
-                        map.setView(location, 14);
-
-                        // Update estimasi waktu tiba (ETA) dan jarak jika data tersedia
-                        const distance = calculateDistance(location, [{{ $order-> latitude ?? -7.2575 }
-                }, {{ $order-> longitude ?? 112.7521 }}]); // Lokasi tujuan
-        $('#distanceText').text(distance.toFixed(1) + " km");
-        $('#etaTime').text((distance / 0.5).toFixed(0) + " menit"); // Estimasi ETA berdasarkan kecepatan 30 km/jam
-                                                                                                                                }
-                                                                                                                            },
-        error: function (error) {
-            console.error('Gagal mendapatkan lokasi kurir', error);
-        }
-                                                                                                                        });
-                                                                                                                    }
-
-        // Fungsi untuk menghitung jarak antara dua titik (menggunakan rumus Haversine)
-        function calculateDistance([lat1, lon1], [lat2, lon2]) {
-            const R = 6371; // Radius bumi dalam km
-            const dLat = toRad(lat2 - lat1);
-            const dLon = toRad(lon2 - lon1);
-            const a =
-                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-                Math.sin(dLon / 2) * Math.sin(dLon / 2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            const distance = R * c; // Jarak dalam km
-            return distance;
-        }
-
-        // Fungsi untuk mengubah derajat ke radian
-        function toRad(deg) {
-            return deg * (Math.PI / 180);
-        }
-
-        // Perbarui lokasi kurir setiap 10 detik
-        const courierId = {{ $kurir-> id }}; // ID kurir
-        setInterval(function () {
-            updateCourierLocation(courierId);
-        }, 10000); // Update setiap 10 detik
-    </script> --}}
-
 @endsection

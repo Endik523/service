@@ -21,7 +21,6 @@ class RiwayatResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'Riwayat Order';
-    protected static ?string $modelLabel = 'Riwayat Order';
     // protected static ?string $navigationGroup = 'Order Management';
 
     public static function form(Form $form): Form
@@ -119,10 +118,7 @@ class RiwayatResource extends Resource
                             $query->where('status', $data['value']);
                         }
                     }),
-                // Tables\Filters\Filter::make('belum_ada_masalah')
-                //     ->query(fn(Builder $query): Builder => $query->whereNull('masalah_kerusakan')->orWhere('masalah_kerusakan', ''))
-                //     ->label('Belum Ada Masalah Kerusakan')
-                //     ->default(),
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -143,7 +139,12 @@ class RiwayatResource extends Resource
                 Tables\Actions\Action::make('assignKurir')
                     ->label('Assign Kurir')
                     ->icon('heroicon-o-truck')
-                    ->visible(fn(Order $record): bool => $record->jemput_barang === 'YES' && !$record->kurir)
+                    ->visible(
+                        fn(Order $record): bool =>
+                        $record->jemput_barang === 'YES'
+                            && !$record->kurir
+                            && $record->status !== Order::STATUS_PENJEMPUTAN
+                    )
                     ->action(function (Order $record) {
                         return redirect()->route('filament.admin.resources.kurirs.create', [
                             'order_id' => $record->id,

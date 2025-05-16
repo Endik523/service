@@ -19,7 +19,7 @@ class KurirResource extends Resource
 {
     protected static ?string $model = Kurir::class;
 
-    protected static ?string $navigationGroup = 'Orders';
+    protected static ?string $navigationGroup = 'Management Order';
     protected static ?string $navigationLabel = 'Kurir';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';

@@ -17,7 +17,7 @@ use Filament\Tables\Columns\NumberColumn;
 class MasalahKerusakanResource extends Resource
 {
     protected static ?string $model = DamageDetails::class;
-    protected static ?string $navigationGroup = 'Orders';
+    protected static ?string $navigationGroup = 'Management Order';
     protected static ?string $navigationLabel = 'Harga';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
