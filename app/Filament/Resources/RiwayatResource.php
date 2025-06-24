@@ -27,37 +27,6 @@ class RiwayatResource extends Resource
     {
         return $form
             ->schema([
-                // Forms\Components\TextInput::make('id_random')
-                //     ->required()
-                //     ->maxLength(7),
-                // Forms\Components\TextInput::make('username')
-                //     ->required()
-                //     ->maxLength(255),
-                // Forms\Components\TextInput::make('barang')
-                //     ->required()
-                //     ->maxLength(255),
-                // Forms\Components\Textarea::make('alamat')
-                //     ->required(),
-                // Forms\Components\DatePicker::make('tgl_pesan')
-                //     ->required(),
-                // Forms\Components\Textarea::make('pesan')
-                //     ->required(),
-                // Forms\Components\Select::make('jemput_barang')
-                //     ->options([
-                //         'YES' => 'Ya',
-                //         'NO' => 'Tidak'
-                //     ]),
-                // Forms\Components\Select::make('status')
-                //     ->label('Status Pesanan')
-                //     ->options(Order::getStatuses())
-                //     ->required(),
-                // Forms\Components\Select::make('jemput_barang')
-                //     ->label('Jemput Barang')
-                //     ->options([
-                //         'YES' => 'Ya',
-                //         'NO' => 'Tidak'
-                //     ])
-                //     ->required(),
                 Forms\Components\Textarea::make('masalah_kerusakan')
                     ->required(),
             ]);
@@ -100,12 +69,6 @@ class RiwayatResource extends Resource
                 Tables\Columns\TextColumn::make('jemput_barang')
                     ->sortable()
                     ->searchable(),
-                // Tables\Columns\TextColumn::make('created_at')
-                //     ->dateTime('d M Y, H:i')
-                //     ->sortable(),
-                // Tables\Columns\TextColumn::make('updated_at')
-                //     ->dateTime('d M Y, H:i')
-                //     ->sortable(),
             ])
             ->filters([
                 // Filter berdasarkan status
