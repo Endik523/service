@@ -48,7 +48,7 @@
 
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <input type="tel" class="form-control" id="no_telp" name="no_telp"
+                                <input type="text" class="form-control" id="no_telp" name="no_telp"
                                     placeholder="Nomor Telepon" required>
                                 <label for="no_telp" class="fw-semibold">
                                     <i class="fas fa-phone me-2 text-primary"></i>Nomor Telepon
