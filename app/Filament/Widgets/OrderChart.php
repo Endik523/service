@@ -7,7 +7,7 @@ use Filament\Widgets\ChartWidget;
 
 class OrderChart extends ChartWidget
 {
-    protected static ?string $heading = 'Prediksi Pesanan (Double Exponential Smoothing)';
+    protected static ?string $heading = 'Prediksi Pesanan';
 
     protected function getData(): array
     {
@@ -28,36 +28,32 @@ class OrderChart extends ChartWidget
             $dates->put($date, $rawData[$date] ?? 0);
         }
 
-        // Step 2: Terapkan Double Exponential Smoothing
-        $alpha = 0.5; // smoothing untuk level
-        $beta = 0.5;  // smoothing untuk trend
+        // Step 2: Terapkan Single Exponential Smoothing
+        $alpha = 0.9; // smoothing untuk level
 
         $St = null; // level
-        $Tt = 0;    // trend
         $forecast = [];
 
         foreach ($dates as $date => $actual) {
             if (is_null($St)) {
-                // Inisialisasi pertama: level = nilai pertama, trend = 0
+                // Inisialisasi pertama: level = nilai pertama
                 $St = $actual;
-                $Tt = 0;
             } else {
-                $prevSt = $St;
-                $St = $alpha * $actual + (1 - $alpha) * ($St + $Tt);
-                $Tt = $beta * ($St - $prevSt) + (1 - $beta) * $Tt;
+                // Single Exponential Smoothing
+                $St = $alpha * $actual + (1 - $alpha) * $St;
             }
 
-            $forecast[$date] = round($St + $Tt, 2);
+            $forecast[$date] = round($St, 2);
         }
 
         // Step 3: Prediksi hari ke-31 (besok)
         $nextDate = now()->addDay()->format('Y-m-d');
-        $forecast[$nextDate] = round($St + $Tt, 2); // forecast t+1
+        $forecast[$nextDate] = round($St, 2); // forecast t+1
 
         return [
             'datasets' => [
                 [
-                    'label' => 'Prediksi Pesanan (DES)',
+                    'label' => 'Prediksi Pesanan (SES)',
                     'data' => array_values($forecast),
                     'borderColor' => '#6366f1',
                     'backgroundColor' => 'rgba(99, 102, 241, 0.3)',
@@ -66,6 +62,7 @@ class OrderChart extends ChartWidget
             'labels' => array_keys($forecast),
         ];
     }
+
 
     protected function getType(): string
     {

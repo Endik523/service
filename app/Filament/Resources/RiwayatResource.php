@@ -60,7 +60,7 @@ class RiwayatResource extends Resource
                     })
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('pesan')
+                Tables\Columns\TextColumn::make('masalah_kerusakan')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tgl_pesan')

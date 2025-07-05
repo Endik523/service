@@ -37,8 +37,8 @@ class OrderResource extends Resource
             //     ->maxLength(255),
             // Forms\Components\Textarea::make('alamat')
             //     ->required(),
-            // Forms\Components\DatePicker::make('tgl_pesan')
-            //     ->required(),
+            Forms\Components\DatePicker::make('tgl_pesan')
+                ->required(),
             // Forms\Components\Textarea::make('pesan')
             //     ->required(),
             // Forms\Components\Select::make('jemput_barang')
@@ -51,7 +51,7 @@ class OrderResource extends Resource
             //     ->options(Order::getStatuses())
             //     ->required(),
             Forms\Components\Textarea::make('masalah_kerusakan')
-                ->required(),
+                ->nullable(),
         ]);
     }
 
