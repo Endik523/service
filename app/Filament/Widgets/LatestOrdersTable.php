@@ -22,7 +22,9 @@ class LatestOrdersTable extends TableWidget
 
     protected function getTableQuery(): Builder
     {
-        return Order::query()->latest()->limit(10);
+        return Order::query()
+        ->orderBy('tgl_pesan', 'desc')
+        ->limit(10);
     }
 
     protected function getTableColumns(): array
@@ -50,9 +52,10 @@ class LatestOrdersTable extends TableWidget
                     Order::STATUS_DIBATALKAN => 'danger',
                 ]),
 
-            TextColumn::make('created_at')
+            TextColumn::make('tgl_pesan')
                 ->label('Tanggal')
                 ->dateTime('d M Y'),
         ];
     }
+
 }
