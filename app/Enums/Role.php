@@ -9,6 +9,7 @@ enum Role: string
     case ADMIN = 'admin';
     case USER = 'user';
     case KURIR = 'kurir';
+    case TEKNISI = 'teknisi';
 
     public static function values(): array
     {
@@ -16,6 +17,7 @@ enum Role: string
             self::ADMIN->value,
             self::USER->value,
             self::KURIR->value,
+            self::TEKNISI->value,
         ];
     }
 }

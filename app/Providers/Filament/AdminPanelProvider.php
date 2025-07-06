@@ -20,15 +20,22 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Illuminate\Support\Facades\Auth;
+use Filament\Pages\Dashboard;
+use App\Filament\Resources\OrderResource;
+use App\Filament\Resources\MasalahKerusakanResource;
+use App\Filament\Resources\KurirResource;
+use App\Filament\Resources\RiwayatResource;
+use App\Filament\Resources\UserResource;
 
 
 class AdminPanelProvider extends PanelProvider
 {
-
     public function panel(Panel $panel): Panel
     {
-        return $panel
+        $user = Auth::user();
 
+        return $panel
             ->default()
             ->sidebarCollapsibleOnDesktop(true)
             ->id('admin')
@@ -37,17 +44,23 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Blue,
             ])
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->resources(
+                $user && $user->role === 'teknisi'
+                    ? [OrderResource::class] // Teknisi hanya OrderResource
+                    : [ // Role lain boleh semua resource
+                        OrderResource::class,
+                        MasalahKerusakanResource::class,
+                        KurirResource::class,
+                        RiwayatResource::class,
+                        UserResource::class,
+                        // Tambahkan resource lain di sini jika ada
+                    ]
+            )
             ->pages([
-                Pages\Dashboard::class,
+                Dashboard::class,
+                // Bisa tambahkan custom page jika kamu punya
             ])
-            // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                // Widgets\AccountWidget::class,
-                // Widgets\FilamentInfoWidget::class,
-
-                // Daftarkan widget custom Anda di sini
                 StatsOverview::class,
                 OrderChart::class,
                 LatestOrdersTable::class,
@@ -68,3 +81,49 @@ class AdminPanelProvider extends PanelProvider
             ]);
     }
 }
+// class AdminPanelProvider extends PanelProvider
+// {
+
+//     public function panel(Panel $panel): Panel
+//     {
+//         return $panel
+
+//             ->default()
+//             ->sidebarCollapsibleOnDesktop(true)
+//             ->id('admin')
+//             ->path('admin')
+//             ->login()
+//             ->colors([
+//                 'primary' => Color::Blue,
+//             ])
+//             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
+//             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+//             ->pages([
+//                 Pages\Dashboard::class,
+//             ])
+//             // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+//             ->widgets([
+//                 // Widgets\AccountWidget::class,
+//                 // Widgets\FilamentInfoWidget::class,
+
+//                 // Daftarkan widget custom Anda di sini
+//                 StatsOverview::class,
+//                 OrderChart::class,
+//                 LatestOrdersTable::class,
+//             ])
+//             ->middleware([
+//                 EncryptCookies::class,
+//                 AddQueuedCookiesToResponse::class,
+//                 StartSession::class,
+//                 AuthenticateSession::class,
+//                 ShareErrorsFromSession::class,
+//                 VerifyCsrfToken::class,
+//                 SubstituteBindings::class,
+//                 DisableBladeIconComponents::class,
+//                 DispatchServingFilamentEvent::class,
+//             ])
+//             ->authMiddleware([
+//                 Authenticate::class,
+//             ]);
+//     }
+// }

@@ -5,9 +5,16 @@ namespace App\Filament\Widgets;
 use App\Models\Order;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Support\Facades\Auth;
 
 class StatsOverview extends BaseWidget
 {
+
+    public static function canView(): bool
+    {
+        return Auth::user()?->role !== 'teknisi';
+    }
+
     protected function getStats(): array
     {
         return [

@@ -13,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\NumberColumn;
+use Illuminate\Support\Facades\Auth;
 
 class MasalahKerusakanResource extends Resource
 {
@@ -21,6 +22,11 @@ class MasalahKerusakanResource extends Resource
     protected static ?string $navigationLabel = 'Harga';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+        public static function shouldRegisterNavigation(): bool
+    {
+        return Auth::user()?->role !== 'teknisi';
+    }
 
     public static function form(Form $form): Form
     {

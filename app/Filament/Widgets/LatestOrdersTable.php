@@ -8,10 +8,17 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\BadgeColumn;
 
+use Illuminate\Support\Facades\Auth;
+
 class LatestOrdersTable extends TableWidget
 {
     protected int | string | array $columnSpan = 'full';
     protected static ?string $heading = 'Tabel Orderan';
+
+    public static function canView(): bool
+    {
+        return Auth::user()?->role !== 'teknisi';
+    }
 
     protected function getTableQuery(): Builder
     {

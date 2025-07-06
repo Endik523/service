@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Components\Password;
 use Filament\Tables\Columns\DateTimeColumn;
+use Illuminate\Support\Facades\Auth;
 
 class UserResource extends Resource
 {
@@ -26,6 +27,11 @@ class UserResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Managemen User Admin';
     protected static ?string $modelLabel = 'User';
+
+        public static function shouldRegisterNavigation(): bool
+    {
+        return Auth::user()?->role !== 'teknisi';
+    }
 
     public static function form(Form $form): Form
     {
