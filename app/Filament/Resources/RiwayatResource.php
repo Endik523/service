@@ -15,6 +15,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use Filament\Facades\Filament;
 
 class RiwayatResource extends Resource
 {
@@ -23,11 +24,11 @@ class RiwayatResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'Riwayat Order';
     // protected static ?string $navigationGroup = 'Order Management';
-    
-        public static function shouldRegisterNavigation(): bool
-    {
-        return Auth::user()?->role !== 'teknisi';
-    }
+
+    public static function shouldRegisterNavigation(): bool
+{
+    return Filament::auth()->check() && Filament::auth()->user()?->role !== 'teknisi';
+}
 
     public static function form(Form $form): Form
     {

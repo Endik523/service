@@ -24,11 +24,10 @@ class OrderResource extends Resource
     protected static ?string $modelLabel = 'Order';
     // protected static ?string $navigationGroup = 'Order Management';
 
-    public static function shouldRegisterNavigation(): bool
-    {
-        return true; // semua role bisa lihat
-    }
-
+    // public static function shouldRegisterNavigation(): bool
+    // {
+    //     return true; // semua role bisa lihat
+    // }
 
 
     public static function form(Form $form): Form

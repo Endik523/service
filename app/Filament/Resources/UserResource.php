@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Components\Password;
 use Filament\Tables\Columns\DateTimeColumn;
 use Illuminate\Support\Facades\Auth;
+use Filament\Facades\Filament;
 
 class UserResource extends Resource
 {
@@ -28,10 +29,11 @@ class UserResource extends Resource
     protected static ?string $navigationGroup = 'Managemen User Admin';
     protected static ?string $modelLabel = 'User';
 
-        public static function shouldRegisterNavigation(): bool
-    {
-        return Auth::user()?->role !== 'teknisi';
-    }
+    public static function shouldRegisterNavigation(): bool
+{
+    return Filament::auth()->check() && Filament::auth()->user()?->role !== 'teknisi';
+}
+
 
     public static function form(Form $form): Form
     {

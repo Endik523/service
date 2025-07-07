@@ -15,10 +15,6 @@ class LatestOrdersTable extends TableWidget
     protected int | string | array $columnSpan = 'full';
     protected static ?string $heading = 'Tabel Orderan';
 
-    public static function canView(): bool
-    {
-        return Auth::user()?->role !== 'teknisi';
-    }
 
     protected function getTableQuery(): Builder
     {

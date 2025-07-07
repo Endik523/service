@@ -29,11 +29,14 @@ use App\Filament\Resources\RiwayatResource;
 use App\Filament\Resources\UserResource;
 
 
+use App\Http\Middleware\BlockUnauthorizedTechnisiAccess;
+
+
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        $user = Auth::user();
+        $isTechnician = Auth::user()?->role === 'teknisi';
 
         return $panel
             ->default()
@@ -45,20 +48,20 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::Blue,
             ])
             ->resources(
-                $user && $user->role === 'teknisi'
-                    ? [OrderResource::class] // Teknisi hanya OrderResource
-                    : [ // Role lain boleh semua resource
+                $isTechnician
+                    ? [
+                        OrderResource::class,
+                    ]
+                    : [
                         OrderResource::class,
                         MasalahKerusakanResource::class,
                         KurirResource::class,
                         RiwayatResource::class,
                         UserResource::class,
-                        // Tambahkan resource lain di sini jika ada
                     ]
             )
             ->pages([
                 Dashboard::class,
-                // Bisa tambahkan custom page jika kamu punya
             ])
             ->widgets([
                 StatsOverview::class,
@@ -75,6 +78,8 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+
+                BlockUnauthorizedTechnisiAccess::class,
             ])
             ->authMiddleware([
                 Authenticate::class,
