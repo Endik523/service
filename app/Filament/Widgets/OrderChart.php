@@ -19,13 +19,34 @@ class OrderChart extends Widget implements HasForms
     use InteractsWithPageFilters;
 
     protected static string $view = 'filaments.widgets.order-chart';
-    protected static ?string $heading = 'Prediksi Pesanan';
+    protected ?string $heading = 'Prediksi Pesanan';
     protected int|string|array $columnSpan = 'full';
     protected static ?int $contentHeight = 500;
 
     public ?string $timeRange = '30';
     public ?string $product = 'all';
     
+     protected function getHeading(): string
+    {
+        $productFilter = $this->product ?? 'all';
+        $productName = $productFilter === 'all' 
+            ? 'Semua Barang' 
+            : $this->getFilters()['product']['options'][$productFilter] ?? $productFilter;
+
+        $timeRange = $this->timeRange ?? '30';
+        $timeLabel = $this->getFilters()['timeRange']['options'][$timeRange] ?? "{$timeRange} Hari";
+
+        return "Prediksi Pesanan - {$productName} ({$timeLabel})";
+    }
+
+    public function updated($property)
+    {
+        if (in_array($property, ['timeRange', 'product'])) {
+            // Memaksa Livewire merender ulang heading
+            $this->getHeading();
+        }
+    }
+
     protected function getFilters(): array
     {
         return [
@@ -54,50 +75,40 @@ class OrderChart extends Widget implements HasForms
     }
 
     protected function getOptions(): array
-    {
-        $chartData = $this->getData();
-        
-        return [
-            'responsive' => true,
-            'maintainAspectRatio' => false,
-            'plugins' => [
+{
+    return [
+        'responsive' => true,
+        'maintainAspectRatio' => false,
+        'plugins' => [
+            'title' => [
+                'display' => true,
+                'text' => $this->getHeading(),
+            ],
+            'legend' => [
+                'display' => true,
+                'position' => 'top',
+            ],
+            // Hapus callbacks dari PHP, pindahkan ke JS
+        ],
+        'scales' => [
+            'x' => [
+                'display' => true,
                 'title' => [
                     'display' => true,
-                    'text' => $chartData['metadata']['product_name'] ?? 'Prediksi Pesanan'
+                    'text' => 'Tanggal',
                 ],
-                'legend' => [
-                    'display' => true,
-                    'position' => 'top'
-                ],
-                'tooltip' => [
-                    'mode' => 'index',
-                    'intersect' => false,
-                    'callbacks' => [
-                        'label' => function($context) {
-                            return $context->dataset->label . ': ' . $context->parsed->y + ' pesanan';
-                        }
-                    ]
-                ]
             ],
-            'scales' => [
-                'x' => [
+            'y' => [
+                'display' => true,
+                'title' => [
                     'display' => true,
-                    'title' => [
-                        'display' => true,
-                        'text' => 'Tanggal'
-                    ]
+                    'text' => 'Jumlah Pesanan',
                 ],
-                'y' => [
-                    'display' => true,
-                    'title' => [
-                        'display' => true,
-                        'text' => 'Jumlah Pesanan'
-                    ],
-                    'beginAtZero' => true
-                ]
-            ]
-        ];
-    }
+                'beginAtZero' => true,
+            ],
+        ],
+    ];
+}
 
     protected function getChartWrapperAttributes(): string
     {
@@ -138,30 +149,25 @@ class OrderChart extends Widget implements HasForms
 
     protected function getData(): array
     {
-        // Fix: Use proper filter access
         $jumlahHariPrediksi = intval($this->timeRange ?? 30);
         $productFilter = $this->product ?? 'all';
         
         $startDate = '2023-04-01';
         $endDate = now()->format('Y-m-d');
         
-        // Base query dengan filter produk
         $query = Order::query()
             ->whereBetween('tgl_pesan', [$startDate, $endDate]);
             
-        // Apply product filter
         if ($productFilter !== 'all' && !empty($productFilter)) {
             $query->where('barang', $productFilter);
         }
 
-        // Get historical data with optimized query
         $rawData = $query
             ->selectRaw('DATE(tgl_pesan) as date, COUNT(*) as count')
             ->groupBy('date')
             ->orderBy('date')
             ->pluck('count', 'date');
 
-        // Jika tidak ada data, return empty chart
         if ($rawData->isEmpty()) {
             return [
                 'datasets' => [],
@@ -173,7 +179,6 @@ class OrderChart extends Widget implements HasForms
             ];
         }
 
-        // Fill missing dates with interpolated values
         $historicalData = collect();
         $period = CarbonPeriod::create($startDate, $endDate);
         $previousValue = null;
@@ -184,14 +189,12 @@ class OrderChart extends Widget implements HasForms
                 $historicalData->put($formatted, $rawData[$formatted]);
                 $previousValue = $rawData[$formatted];
             } else {
-                // Simple interpolation for missing values
                 $interpolated = $previousValue ?? 0;
                 $historicalData->put($formatted, $interpolated);
             }
         }
 
-        // Remove leading zeros and ensure minimum data points
-        $historicalData = $historicalData->filter(function($value, $key) {
+        $historicalData = $historicalData->filter(function($value) {
             return $value > 0;
         });
 
@@ -206,29 +209,24 @@ class OrderChart extends Widget implements HasForms
             ];
         }
 
-        // Calculate enhanced statistics
         $values = $historicalData->values();
         $avgOrders = $values->avg();
         $maxOrders = $values->max();
         $minOrders = $values->min();
         $stdDev = sqrt($values->map(fn($x) => pow($x - $avgOrders, 2))->avg());
         
-        // Calculate volatility and trend strength
         $volatility = $avgOrders > 0 ? $stdDev / $avgOrders : 0;
         $recentTrend = $this->calculateTrend($values->slice(-min(30, $values->count())));
         
-        // Conservative parameter adjustment for realistic predictions
         $alpha = min(0.4, max(0.1, 0.2 + $volatility * 0.3));
         $beta = min(0.3, max(0.05, 0.1 + abs($recentTrend) * 0.2));
         $gamma = min(0.3, max(0.05, 0.1 + $volatility * 0.2));
-        $seasonLength = 7; // Weekly seasonality
+        $seasonLength = 7;
 
-        // Enhanced Holt-Winters initialization
         $level = $this->calculateInitialLevel($values, $seasonLength);
         $trend = $this->calculateInitialTrend($values, $seasonLength);
         $seasonal = $this->calculateInitialSeasonal($historicalData, $seasonLength, $avgOrders);
 
-        // Advanced Triple Exponential Smoothing
         $forecastErrors = [];
         $adaptiveFactors = [];
         
@@ -237,17 +235,14 @@ class OrderChart extends Widget implements HasForms
                 $dateObj = Carbon::parse($date);
                 $seasonIndex = $dateObj->dayOfWeek;
                 
-                // Ensure seasonal array has the required index
                 if (!isset($seasonal[$seasonIndex])) {
                     $seasonal[$seasonIndex] = 0;
                 }
                 
-                // Calculate forecast for error tracking
                 $forecast = $level + $trend + $seasonal[$seasonIndex];
                 $error = $actual - $forecast;
                 $forecastErrors[] = $error;
                 
-                // Adaptive learning rate based on forecast accuracy
                 $adaptiveFactor = 1.0;
                 if (count($forecastErrors) >= 7) {
                     $recentErrors = array_slice($forecastErrors, -7);
@@ -256,7 +251,6 @@ class OrderChart extends Widget implements HasForms
                 }
                 $adaptiveFactors[] = $adaptiveFactor;
                 
-                // Update components with adaptive learning
                 $lastLevel = $level;
                 $level = ($alpha * $adaptiveFactor) * ($actual - $seasonal[$seasonIndex]) + 
                         (1 - $alpha * $adaptiveFactor) * ($level + $trend);
@@ -267,12 +261,10 @@ class OrderChart extends Widget implements HasForms
                 $seasonal[$seasonIndex] = ($gamma * $adaptiveFactor) * ($actual - $level) + 
                                         (1 - $gamma * $adaptiveFactor) * $seasonal[$seasonIndex];
             } catch (\Exception $e) {
-                // Skip invalid dates or calculations
                 continue;
             }
         }
 
-        // Generate predictions for past 30 days (backtesting)
         $backtestData = collect();
         $backtestStartDate = Carbon::parse($endDate)->subDays(30);
         $backtestPeriod = CarbonPeriod::create($backtestStartDate, $endDate);
@@ -300,7 +292,6 @@ class OrderChart extends Widget implements HasForms
             $backtestData->put($dateFormatted, $prediction);
         }
 
-        // Generate future predictions
         $predictedData = collect();
         $lastDate = Carbon::parse($endDate);
         $confidenceIntervals = [];
@@ -337,16 +328,14 @@ class OrderChart extends Widget implements HasForms
             ];
         }
 
-        // Prepare enhanced chart data
         $labels = array_merge(
             array_keys($historicalData->toArray()),
             array_keys($backtestData->toArray()),
             array_keys($predictedData->toArray())
         );
 
-        // Update chart heading berdasarkan filter
         $productName = $productFilter === 'all' ? 'Semua Barang' : $productFilter;
-        static::$heading = "Prediksi Pesanan - {$productName}";
+        $this->heading = "Prediksi Pesanan - {$productName}";
 
         return [
             'datasets' => [
@@ -470,7 +459,6 @@ class OrderChart extends Widget implements HasForms
             $seasonalCounts[$dayOfWeek]++;
         }
         
-        // Calculate average for each day and normalize
         for ($i = 0; $i < $seasonLength; $i++) {
             if ($seasonalCounts[$i] > 0) {
                 $seasonal[$i] = ($seasonal[$i] / $seasonalCounts[$i]) - $avgOrders;
@@ -482,16 +470,15 @@ class OrderChart extends Widget implements HasForms
 
     private function calculateCyclicalComponent(int $dayAhead, float $avgOrders): float
     {
-        // Very subtle cyclical patterns - reduced amplitude
-        $monthlyEffect = sin(2 * pi() * $dayAhead / 30) * ($avgOrders * 0.02); // Reduced from 0.05
-        $quarterlyEffect = cos(2 * pi() * $dayAhead / 90) * ($avgOrders * 0.01); // Reduced from 0.03
+        $monthlyEffect = sin(2 * pi() * $dayAhead / 30) * ($avgOrders * 0.02);
+        $quarterlyEffect = cos(2 * pi() * $dayAhead / 90) * ($avgOrders * 0.01);
         
         return $monthlyEffect + $quarterlyEffect;
     }
 
     protected function getType(): string
     {
-        return 'line';
+        return 'bar';
     }
 
     protected function getExtraStyles(): array
@@ -509,4 +496,3 @@ class OrderChart extends Widget implements HasForms
         ];
     }
 }
-

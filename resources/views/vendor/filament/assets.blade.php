@@ -1,3 +1,4 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 @if (isset($data))
     <script>
         window.filamentData = @js($data)
